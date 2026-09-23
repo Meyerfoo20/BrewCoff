@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
 
@@ -72,6 +71,7 @@
     <section class="products-grid" id="productContainer">
     </section>
 
+    <!-- Custom Studio -->
     <section id="studio" class="custom-studio-section">
         <div class="studio-container">
             <div class="studio-preview">
@@ -82,24 +82,40 @@
             </div>
             <div class="studio-controls">
                 <h2>Skapa din egen mugg</h2>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Lägg till din personliga text eller ladda upp en valfri bild för att skapa en unik kaffemugg.</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Välj om du vill lägga till en egen text eller ladda upp en bild på muggen.</p>
 
+                <!-- Välj designtyp (Text eller Bild) -->
                 <div class="control-group">
-                    <label for="customText">Egen Text</label>
-                    <input type="text" id="customText" placeholder="Ex. Världens Bästa Fika" oninput="drawCustomMug()">
+                    <label>Typ av motiv</label>
+                    <div class="design-type-selector">
+                        <label class="radio-label">
+                            <input type="radio" name="designType" value="text" checked onchange="switchDesignType('text')">
+                            <span>Egen Text</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="designType" value="image" onchange="switchDesignType('image')">
+                            <span>Egen Bild</span>
+                        </label>
+                    </div>
                 </div>
 
-                <div class="control-group">
-                    <label>Textfärg</label>
+                <!-- Text-kontroller -->
+                <div id="textControls" class="control-group">
+                    <label for="customText">Egen Text</label>
+                    <input type="text" id="customText" placeholder="Ex. Världens Bästa Fika" oninput="drawCustomMug()">
+
+                    <label style="margin-top: 12px;">Textfärg</label>
                     <input type="color" id="textColor" value="#181c19" onchange="drawCustomMug()" style="border:none; width:40px; height:40px; cursor:pointer;">
                 </div>
 
-                <div class="control-group">
+                <!-- Bild-kontroller (dold som standard) -->
+                <div id="imageControls" class="control-group" style="display: none;">
                     <label>Ladda upp bild/motiv</label>
                     <label class="file-upload-btn">
                         📁 Välj bild från datorn
                         <input type="file" id="imageLoader" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
                     </label>
+                    <span id="fileNameDisplay" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Ingen bild vald</span>
                 </div>
 
                 <button class="btn-primary" style="margin-top: 10px;" onclick="addCustomMugToCart()">
@@ -216,6 +232,7 @@
         let cart = [];
         let activeCategory = 'all';
         let uploadedImage = null;
+        let currentDesignType = 'text'; // 'text' eller 'image'
         let baseMugImg = new Image();
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -267,7 +284,7 @@
             renderProducts(filtered);
         }
 
-        /* Cart func */
+        /* Cart functions */
         function addToCart(productId) {
             const item = products.find(p => p.id === productId);
             cart.push({ ...item, cartId: Date.now() });
@@ -329,8 +346,9 @@
             toggleCart();
         }
 
+        /* Custom Mug Canvas */
         function initCanvas() {
-            baseMugImg.src = 'Stock-Mugg.png';
+            baseMugImg.src = 'Images/Stock-Mugg.png';
             baseMugImg.onload = function() {
                 drawCustomMug();
             };
@@ -339,17 +357,26 @@
             }
         }
 
+        function switchDesignType(type) {
+            currentDesignType = type;
+            document.getElementById('textControls').style.display = (type === 'text') ? 'block' : 'none';
+            document.getElementById('imageControls').style.display = (type === 'image') ? 'block' : 'none';
+            drawCustomMug();
+        }
+
         function handleImageUpload(e) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                uploadedImage = new Image();
-                uploadedImage.onload = function() {
-                    drawCustomMug();
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileNameDisplay').innerText = `Vald bild: ${file.name}`;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedImage = new Image();
+                    uploadedImage.onload = function() {
+                        drawCustomMug();
+                    }
+                    uploadedImage.src = event.target.result;
                 }
-                uploadedImage.src = event.target.result;
-            }
-            if(e.target.files[0]) {
-                reader.readAsDataURL(e.target.files[0]);
+                reader.readAsDataURL(file);
             }
         }
 
@@ -359,25 +386,27 @@
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // 1. Rita alltid mallmugg från Stock-Mugg.png
             if (baseMugImg.complete && baseMugImg.naturalWidth !== 0) {
                 ctx.drawImage(baseMugImg, 15, 15, 270, 270);
             }
 
-            if (uploadedImage) {
+            // 2. Rita antingen bild eller text baserat på valet
+            if (currentDesignType === 'image' && uploadedImage) {
                 ctx.save();
                 ctx.beginPath();
-                ctx.rect(70, 95, 100, 100);
+                ctx.rect(75, 85, 110, 110);
                 ctx.clip();
-                ctx.drawImage(uploadedImage, 70, 95, 100, 100);
+                ctx.drawImage(uploadedImage, 75, 85, 110, 110);
                 ctx.restore();
-            }
-
-            const text = document.getElementById("customText").value;
-            if(text) {
-                ctx.fillStyle = document.getElementById("textColor").value;
-                ctx.font = "bold 15px 'Plus Jakarta Sans', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText(text, 120, uploadedImage ? 215 : 150);
+            } else if (currentDesignType === 'text') {
+                const text = document.getElementById("customText").value;
+                if (text) {
+                    ctx.fillStyle = document.getElementById("textColor").value;
+                    ctx.font = "bold 15px 'Plus Jakarta Sans', sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(text, 130, 150);
+                }
             }
         }
 
@@ -388,7 +417,7 @@
                 name: "Egen Design Mugg",
                 category: "motiv",
                 price: 249,
-                desc: "Personligt designad keramikmugg.",
+                desc: currentDesignType === 'text' ? "Personlig textmugg." : "Personlig bildmugg.",
                 image: canvas.toDataURL()
             };
             cart.push(customMugItem);

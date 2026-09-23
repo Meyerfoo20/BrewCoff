@@ -673,3 +673,34 @@
         font-size: 0.85rem;
         color: var(--border-color);
     }
+    .design-type-selector {
+        display: flex;
+        gap: 12px;
+        margin-top: 4px;
+    }
+
+    .radio-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.95rem;
+        padding: 10px 18px;
+        background: var(--bg-alt);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-color);
+        transition: var(--transition-smooth);
+        user-select: none;
+    }
+
+    .radio-label:has(input:checked) {
+        background: var(--accent-light);
+        border-color: var(--accent-main);
+        color: var(--accent-main);
+        font-weight: 600;
+    }
+
+    .radio-label input[type="radio"] {
+        accent-color: var(--accent-main);
+    }

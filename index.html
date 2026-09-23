@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrewCoff</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+    <div class="top-bar">
+        ☕ Fri frakt vid beställningar över 299 kr | Snabb leverans 1-3 vardagar
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            BrewCoff.
+        </a>
+        <ul class="nav-links">
+            <li><a href="#produkter">Alla Produkter</a></li>
+            <li><a href="#produkter" onclick="filterCategory('motiv')">Motivmuggar</a></li>
+            <li><a href="#produkter" onclick="filterCategory('filter')">Kaffefilter</a></li>
+            <li><a href="#studio">Designa Egen</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="cart-btn" onclick="toggleCart()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                Varukorg
+                <span class="cart-badge" id="cartCount">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Höj din kaffestund <span style="color: #d97706;">varje morgon</span></h1>
+            <p>Upptäck vårt unika sortiment av handplockade kaffemuggar, kaffefilter eller skapa din helt egna personliga mugg.</p>
+            <div class="hero-buttons">
+                <a href="#produkter" class="btn-primary">Utforska Sortiment</a>
+                <a href="#studio" class="btn-secondary">Designa Egen Mugg</a>
+            </div>
+        </div>
+        <div class="hero-image-card">
+            <img src="Images/brewcoff-mugg.png" alt="BrewCoff Classic Mugg">
+        </div>
+    </section>
+
+    <!-- Catalog -->
+    <section id="produkter" class="catalog-header">
+        <div class="filter-pills">
+            <button class="filter-pill active" onclick="filterCategory('all', this)">Alla</button>
+            <button class="filter-pill" onclick="filterCategory('motiv', this)">Motivmuggar</button>
+            <button class="filter-pill" onclick="filterCategory('filter', this)">Kaffefilter</button>
+        </div>
+        <div class="search-box">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" placeholder="Sök mugg eller filter..." onkeyup="searchProducts(this.value)">
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section class="products-grid" id="productContainer">
+    </section>
+
+    <section id="studio" class="custom-studio-section">
+        <div class="studio-container">
+            <div class="studio-preview">
+                <h3>Förhandsgranskning</h3>
+                <div class="canvas-container">
+                    <canvas id="mugCanvas" width="300" height="300"></canvas>
+                </div>
+            </div>
+            <div class="studio-controls">
+                <h2>Skapa din egen mugg</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Lägg till din personliga text eller ladda upp en valfri bild för att skapa en unik kaffemugg.</p>
+
+                <div class="control-group">
+                    <label for="customText">Egen Text</label>
+                    <input type="text" id="customText" placeholder="Ex. Världens Bästa Fika" oninput="drawCustomMug()">
+                </div>
+
+                <div class="control-group">
+                    <label>Textfärg</label>
+                    <input type="color" id="textColor" value="#181c19" onchange="drawCustomMug()" style="border:none; width:40px; height:40px; cursor:pointer;">
+                </div>
+
+                <div class="control-group">
+                    <label>Ladda upp bild/motiv</label>
+                    <label class="file-upload-btn">
+                        📁 Välj bild från datorn
+                        <input type="file" id="imageLoader" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                    </label>
+                </div>
+
+                <button class="btn-primary" style="margin-top: 10px;" onclick="addCustomMugToCart()">
+                    Lägg till i varukorg - 249 kr
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Din Varukorg</h3>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Totalt:</span>
+                <span id="cartTotalSum">0 kr</span>
+            </div>
+            <button class="btn-primary" style="width: 100%; text-align: center;" onclick="checkout()">Gå till kassan</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Produkt har lagts till i varukorgen!</div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div>
+                <a href="#" class="logo" style="color: #fff; margin-bottom: 16px;">BrewCoff.</a>
+                <p style="font-size: 0.9rem; color: var(--border-color); max-width: 280px;">
+                    Vi brinner för den perfekta kaffeupplevelsen. Med estetiska muggar och högkvalitativa filter förädlar vi varje fikarast.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Handla</h4>
+                <ul>
+                    <li><a href="#produkter">Motivmuggar</a></li>
+                    <li><a href="#produkter">Kaffefilter</a></li>
+                    <li><a href="#studio">Egen Design</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kundservice</h4>
+                <ul>
+                    <li><a href="#">Frakt & Leverans</a></li>
+                    <li><a href="#">Returer & Reklamation</a></li>
+                    <li><a href="#">Köpvillkor</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontakt</h4>
+                <ul>
+                    <li><a href="#">brewcoff@info.se</a></li>
+                    <li><a href="#">07 123 45 67</a></li>
+                    <li><a href="#">Helsingborg, Sverige</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 BREWCOFF. Alla rättigheter förbehållna.
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const products = [
+            {
+                id: 1,
+                name: "BrewCoff Clean White",
+                category: "motiv",
+                price: 89,
+                desc: "Stilren vit porslinsmugg utan tryck.",
+                image: "Images/Stock-Mugg.png"
+            },
+            {
+                id: 2,
+                name: "BrewCoff Classic Mugg",
+                category: "motiv",
+                price: 99,
+                desc: "Klassisk vit porslinsmugg med den bruna BrewCoff-logotypen.",
+                image: "Images/brewcoff-mugg.png"
+            },
+            {
+                id: 3,
+                name: "BrewCoff Duo-Tone Mugg",
+                category: "motiv",
+                price: 119,
+                desc: "Tvåfärgad porslinsmugg med brun bas och BrewCoff-tryck.",
+                image: "Images/brewcoff-mugg-half.png"
+            },
+            {
+                id: 4,
+                name: "Kaffe Filter",
+                category: "filter",
+                price: 99,
+                desc: "100st",
+                image: "Images/coffe-filter.png"
+            },
+            {
+                id: 5,
+                name: "Kaffe Filter",
+                category: "filter",
+                price: 189,
+                desc: "200st",
+                image: "Images/coffe-filter.png"
+            },
+        ];
+
+        let cart = [];
+        let activeCategory = 'all';
+        let uploadedImage = null;
+        let baseMugImg = new Image();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderProducts(products);
+            initCanvas();
+        });
+
+        function renderProducts(items) {
+            const container = document.getElementById("productContainer");
+            container.innerHTML = "";
+
+            items.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "product-card";
+                card.innerHTML = `
+                    <span class="product-badge">${p.category === 'motiv' ? 'Mugg' : 'Filter'}</span>
+                    <div class="product-img-wrapper">
+                        <img src="${p.image}" alt="${p.name}">
+                    </div>
+                    <h3 class="product-title">${p.name}</h3>
+                    <p class="product-desc">${p.desc}</p>
+                    <div class="product-bottom">
+                        <span class="product-price">${p.price} kr</span>
+                        <button class="add-cart-btn" onclick="addToCart(${p.id})">Lägg till</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterCategory(cat, btn) {
+            activeCategory = cat;
+            if(btn) {
+                document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            if(cat === 'all') {
+                renderProducts(products);
+            } else {
+                renderProducts(products.filter(p => p.category === cat));
+            }
+        }
+
+        function searchProducts(query) {
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(query.toLowerCase()) || 
+                p.desc.toLowerCase().includes(query.toLowerCase())
+            );
+            renderProducts(filtered);
+        }
+
+        /* Cart func */
+        function addToCart(productId) {
+            const item = products.find(p => p.id === productId);
+            cart.push({ ...item, cartId: Date.now() });
+            updateCart();
+            showToast(`${item.name} har lagts till i varukorgen!`);
+        }
+
+        function updateCart() {
+            document.getElementById("cartCount").innerText = cart.length;
+            const itemsContainer = document.getElementById("cartItems");
+            itemsContainer.innerHTML = "";
+
+            let sum = 0;
+            cart.forEach((item, index) => {
+                sum += item.price;
+                const div = document.createElement("div");
+                div.className = "cart-item";
+                div.innerHTML = `
+                    <div class="cart-item-img">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div class="cart-item-price">${item.price} kr</div>
+                    </div>
+                    <button onclick="removeFromCart(${index})" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">&times;</button>
+                `;
+                itemsContainer.appendChild(div);
+            });
+
+            document.getElementById("cartTotalSum").innerText = `${sum} kr`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function toggleCart() {
+            document.getElementById("cartDrawer").classList.toggle("open");
+            document.getElementById("cartOverlay").classList.toggle("open");
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 3000);
+        }
+
+        function checkout() {
+            if(cart.length === 0) {
+                alert("Din varukorg är tom!");
+                return;
+            }
+            alert("Tack för din beställning!");
+            cart = [];
+            updateCart();
+            toggleCart();
+        }
+
+        function initCanvas() {
+            baseMugImg.src = 'Stock-Mugg.png';
+            baseMugImg.onload = function() {
+                drawCustomMug();
+            };
+            if(baseMugImg.complete) {
+                drawCustomMug();
+            }
+        }
+
+        function handleImageUpload(e) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImage = new Image();
+                uploadedImage.onload = function() {
+                    drawCustomMug();
+                }
+                uploadedImage.src = event.target.result;
+            }
+            if(e.target.files[0]) {
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        }
+
+        function drawCustomMug() {
+            const canvas = document.getElementById("mugCanvas");
+            const ctx = canvas.getContext("2d");
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (baseMugImg.complete && baseMugImg.naturalWidth !== 0) {
+                ctx.drawImage(baseMugImg, 15, 15, 270, 270);
+            }
+
+            if (uploadedImage) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(70, 95, 100, 100);
+                ctx.clip();
+                ctx.drawImage(uploadedImage, 70, 95, 100, 100);
+                ctx.restore();
+            }
+
+            const text = document.getElementById("customText").value;
+            if(text) {
+                ctx.fillStyle = document.getElementById("textColor").value;
+                ctx.font = "bold 15px 'Plus Jakarta Sans', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(text, 120, uploadedImage ? 215 : 150);
+            }
+        }
+
+        function addCustomMugToCart() {
+            const canvas = document.getElementById("mugCanvas");
+            const customMugItem = {
+                id: Date.now(),
+                name: "Egen Design Mugg",
+                category: "motiv",
+                price: 249,
+                desc: "Personligt designad keramikmugg.",
+                image: canvas.toDataURL()
+            };
+            cart.push(customMugItem);
+            updateCart();
+            showToast("Din egendesignade mugg har lagts i varukorgen!");
+        }
+    </script>
+</body>
+</html>

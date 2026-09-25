@@ -22,7 +22,7 @@
         </a>
         <ul class="nav-links">
             <li><a href="#produkter">Alla Produkter</a></li>
-            <li><a href="#produkter" onclick="filterCategory('motiv')">Motivmuggar</a></li>
+            <li><a href="#produkter" onclick="filterCategory('motiv')">Muggar</a></li>
             <li><a href="#produkter" onclick="filterCategory('filter')">Kaffefilter</a></li>
             <li><a href="#studio">Designa Egen</a></li>
         </ul>
@@ -58,7 +58,7 @@
     <section id="produkter" class="catalog-header">
         <div class="filter-pills">
             <button class="filter-pill active" onclick="filterCategory('all', this)">Alla</button>
-            <button class="filter-pill" onclick="filterCategory('motiv', this)">Motivmuggar</button>
+            <button class="filter-pill" onclick="filterCategory('motiv', this)">Muggar</button>
             <button class="filter-pill" onclick="filterCategory('filter', this)">Kaffefilter</button>
         </div>
         <div class="search-box">
@@ -157,7 +157,7 @@
             <div class="footer-col">
                 <h4>Handla</h4>
                 <ul>
-                    <li><a href="#produkter">Motivmuggar</a></li>
+                    <li><a href="#produkter">Muggar</a></li>
                     <li><a href="#produkter">Kaffefilter</a></li>
                     <li><a href="#studio">Egen Design</a></li>
                 </ul>
@@ -213,6 +213,30 @@
             },
             {
                 id: 4,
+                name: "BrewCoff Mugg, One More?",
+                category: "motiv",
+                price: 119,
+                desc: "Klassisk brun porslinsmugg med vitt tryck.",
+                image: "Images/brewcoff-mugg-onemore.png"
+            },
+            {
+                id: 5,
+                name: "BrewCoff Mugg, Fika",
+                category: "motiv",
+                price: 119,
+                desc: "Klassisk brun porslinsmugg med vitt tryck och fika dekaler",
+                image: "Images/brewcoff-mugg-fika.png"
+            },
+            {
+                id: 6,
+                name: "BrewCoff Mugg, Irish Coffee",
+                category: "motiv",
+                price: 119,
+                desc: "Klassisk brun porslinsmugg med vitt, irish coffe tryck",
+                image: "Images/brewcoff-mugg-irish.png"
+            },
+            {
+                id: 7,
                 name: "Kaffe Filter",
                 category: "filter",
                 price: 99,
@@ -220,11 +244,19 @@
                 image: "Images/coffe-filter.png"
             },
             {
-                id: 5,
+                id: 8,
                 name: "Kaffe Filter",
                 category: "filter",
                 price: 189,
                 desc: "200st",
+                image: "Images/coffe-filter.png"
+            },
+            {
+                id: 9,
+                name: "Kaffe Filter",
+                category: "filter",
+                price: 279,
+                desc: "300st",
                 image: "Images/coffe-filter.png"
             },
         ];

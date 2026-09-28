@@ -123,6 +123,137 @@
 
     <!-- Footer Anton Blad -->
     <footer>
+<!-- I din <head> -->
+<style>
+  .site-footer {
+    background: #2b1d16;
+    color: #d8c9bc;
+    font-family: system-ui, -apple-system;
+    padding: 3rem 1.5rem 1.5rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.5rem;
+  }
+
+  .footer-col h3 {
+    color: #fff;
+    font-size: 1rem;
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-col a {
+    color: #d8c9bc;
+    text-decoration: none;
+    line-height: 2;
+  }
+
+  .footer-col a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 2.5rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid #4a382b;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    font-size: 0.85rem;
+  }
+
+  .footer-bottom a {
+    color: #a08d7d;
+    text-decoration: none;
+    margin-left: 1rem;
+  }
+
+  .footer-bottom a:hover {
+    color: #fff;
+  }
+</style>
+
+<script>
+  function goToCategory(pillText) {
+    const pill = [...document.querySelectorAll('.filter-pill')]
+      .find(p => p.textContent.trim() === pillText);
+    if (pill) pill.click();
+  }
+</script>
+
+
+<!-- Före </body> -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <p class="footer-brand">BrewCoff</p>
+      <p>Brinner för härliga koppar kaffe och seriösa kaffefilter för dig som tar kaffe på allvar</p>
+    </div>
+
+    <div class="footer-col">
+      <h3>Handla</h3>
+      <ul>
+        <li><a href="#produkter" onclick="goToCategory('Muggar')">Muggar</a></li>
+<li><a href="#produkter" onclick="goToCategory('Kaffefilter')">Filter</a></li>
+
+        <li><a href="#egendesign">Egen Design</a></li>
+        
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Kundservice</h3>
+      <ul>
+        <li><a href="#frakt">Frakt &amp; leverans</a></li>
+        <li><a href="#returer">Returer och Reklamation</a></li>
+        <li><a href="#köpvillkor">Köpvillkor</a></li>
+        
+      </ul>
+    </div>
+
+    <div class="footer-col newsletter">
+      <h3>Kontakta oss</h3>
+      <ul>
+  <li><a href="mailto:brewcoff@info.se">brewcoff@info.se</a></li>
+        <li><a href="#telefonnummer"> 07 123 45 67</a></li>
+        <p>Helsingborg, Sverige</p>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 BrewCoff. Alla rättigheter förbehållna. Bryggat med omsorg.</p>
+    <div>
+      <a href="#sekretesspolicy">Sekretesspolicy</a>
+      <a href="#villkor">Villkor</a>
+      <span style="margin-left:1rem">Visa · Mastercard · PayPal</span>
+    </div>
+  </div>
+</footer>
 
     </footer>
 

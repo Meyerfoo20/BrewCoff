@@ -48,6 +48,11 @@
         font-family: 'Playfair Display', serif;
     }
 
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 90px;
+    }
+
         /* ===== Varukorg Anton Gren ===== */
         .cart-overlay {
             position: fixed;
@@ -377,14 +382,38 @@
 
     <!-- Navbar Rasmus -->
     <nav class="navbar">
-
+        <div class="navbar-inner">
+            <button class="navbar-logo" onclick="scrollToTop()">
+                <span class="logo-icon">☕</span>
+                BrewCoff
+            </button>
+            <div class="navbar-links">
+                <button class="navbar-link" onclick="scrollToSection('produkter')">Produkter</button>
+                <button class="navbar-link" onclick="scrollToSection('om-oss')">Om oss</button>
+            </div>
+        </div>
     </nav>
 
     <!-- Huvudinnehåll Rasmus -->
     <div id="mainView">
         <!-- Hero -->
         <section class="hero">
-
+            <div class="hero-text">
+                <span class="hero-badge">Hantverksmuggar &amp; kaffefilter</span>
+                <h1>Ditt kaffe förtjänar en mugg med personlighet</h1>
+                <p class="hero-subtitle">
+                    Hos BrewCoff designar vi porslinsmuggar och kaffefilter som gör
+                    vardagliga fikastunder lite finare. Enkel design, tåliga material
+                    och tryck som håller – disk för disk.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="scrollToSection('produkter')">Se alla produkter</button>
+                    <button class="btn-secondary" onclick="scrollToSection('om-oss')">Läs om oss</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="Images/brewcoff-mugg.png" alt="BrewCoff Classic Mugg">
+            </div>
         </section>
 
         <!-- Produkt Neo -->
@@ -407,6 +436,45 @@
         <!-- Custom Mugg Jakob -->
         <section id="studio" class="custom-studio-section">
 
+        </section>
+
+        <!-- Om oss Rasmus -->
+        <section id="om-oss" class="about-section">
+            <div class="about-inner">
+                <div class="about-header">
+                    <span class="section-tag">Om oss</span>
+                    <h2>Kaffe med hjärta, muggar med karaktär</h2>
+                    <p>
+                        BrewCoff startade med en enkel idé: att fika ska vara en liten stund
+                        för dig själv. Vi designar våra muggar i små serier och lägger stor
+                        vikt vid både materialkvalitet och hållbarhet, så att din mugg håller
+                        i många kaffebryggor.
+                    </p>
+                </div>
+                <div class="about-cards">
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>
+                        </div>
+                        <h3>Hantverkskvalitet</h3>
+                        <p>Våra muggar formas i tålig porslin och kontrolleras för hand innan de skickas vidare till dig.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                        </div>
+                        <h3>Omsorg om miljön</h3>
+                        <p>Vi packar i papper, inte plast, och väljer material som håller i många år – inte bara en säsong.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                        </div>
+                        <h3>Snabb leverans</h3>
+                        <p>Vi skickar din order inom 1–3 vardagar, och frakten är gratis vid köp över 299 kr.</p>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 
@@ -475,8 +543,140 @@
         <span class="cart-count" id="cartCount" style="display:none;">0</span>
     </button>
 
+
     <!-- Footer Anton Blad -->
     <footer>
+<!-- I din <head> -->
+<style>
+  .site-footer {
+    background: #2b1d16;
+    color: #d8c9bc;
+    font-family: system-ui, -apple-system;
+    padding: 3rem 1.5rem 1.5rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.5rem;
+  }
+
+  .footer-col h3 {
+    color: #fff;
+    font-size: 1rem;
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-col a {
+    color: #d8c9bc;
+    text-decoration: none;
+    line-height: 2;
+  }
+
+  .footer-col a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 2.5rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid #4a382b;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    font-size: 0.85rem;
+  }
+
+  .footer-bottom a {
+    color: #a08d7d;
+    text-decoration: none;
+    margin-left: 1rem;
+  }
+
+  .footer-bottom a:hover {
+    color: #fff;
+  }
+</style>
+
+<script>
+  function goToCategory(pillText) {
+    const pill = [...document.querySelectorAll('.filter-pill')]
+      .find(p => p.textContent.trim() === pillText);
+    if (pill) pill.click();
+  }
+</script>
+
+
+<!-- Före </body> -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <p class="footer-brand">BrewCoff</p>
+      <p>Brinner för härliga koppar kaffe och seriösa kaffefilter för dig som tar kaffe på allvar</p>
+    </div>
+
+    <div class="footer-col">
+      <h3>Handla</h3>
+      <ul>
+        <li><a href="#produkter" onclick="goToCategory('Muggar')">Muggar</a></li>
+<li><a href="#produkter" onclick="goToCategory('Kaffefilter')">Filter</a></li>
+
+        <li><a href="#egendesign">Egen Design</a></li>
+        
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Kundservice</h3>
+      <ul>
+        <li><a href="#frakt">Frakt &amp; leverans</a></li>
+        <li><a href="#returer">Returer och Reklamation</a></li>
+        <li><a href="#köpvillkor">Köpvillkor</a></li>
+        
+      </ul>
+    </div>
+
+    <div class="footer-col newsletter">
+      <h3>Kontakta oss</h3>
+      <ul>
+  <li><a href="mailto:brewcoff@info.se">brewcoff@info.se</a></li>
+        <li><a href="#telefonnummer"> 07 123 45 67</a></li>
+        <p>Helsingborg, Sverige</p>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 BrewCoff. Alla rättigheter förbehållna. Bryggat med omsorg.</p>
+    <div>
+      <a href="#sekretesspolicy">Sekretesspolicy</a>
+      <a href="#villkor">Villkor</a>
+      <span style="margin-left:1rem">Visa · Mastercard · PayPal</span>
+    </div>
+  </div>
+</footer>
 
     </footer>
 
@@ -706,5 +906,6 @@
         loadCartFromStorage();
         renderCart();
     </script>
+
 </body>
 </html>

@@ -191,3 +191,273 @@
     background: var(--accent-main);
     color: var(--btn-text);
 }
+/* ===== Navbar Rasmus ===== */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--bg-glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border-color);
+    transition: box-shadow 0.3s ease;
+}
+
+.navbar.scrolled {
+    box-shadow: 0 10px 30px rgba(24, 28, 25, 0.1);
+}
+
+.navbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.navbar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--accent-main);
+    cursor: pointer;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1;
+}
+
+.navbar-logo .logo-icon {
+    font-size: 1.3rem;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar-link {
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.navbar-link:hover {
+    color: var(--accent-main);
+    background: var(--accent-light);
+}
+
+/* ===== Hero Rasmus ===== */
+.hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 32px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+    flex-wrap: wrap;
+}
+
+.hero-text {
+    flex: 1 1 460px;
+    max-width: 560px;
+}
+
+.hero-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent-main);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    line-height: 1.15;
+    margin-bottom: 18px;
+    color: var(--text-main);
+}
+
+.hero-subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 28px;
+    max-width: 480px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: var(--accent-main);
+    color: var(--btn-text);
+    border: none;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 14px 28px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(59, 39, 32, 0.25);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--accent-main);
+    border: 1px solid var(--border-color);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 14px 28px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-main);
+    background: var(--accent-light);
+}
+
+.hero-image {
+    flex: 1 1 320px;
+    max-width: 420px;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-image img {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-elevated);
+    background: var(--bg-alt);
+    padding: 24px;
+}
+
+@media (max-width: 640px) {
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+}
+
+/* ===== Om oss Rasmus ===== */
+.about-section {
+    background: var(--bg-alt);
+    padding: 80px 32px;
+}
+
+.about-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.about-header {
+    max-width: 640px;
+}
+
+.section-tag {
+    display: inline-block;
+    color: var(--accent-pop);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.about-header h2 {
+    font-size: 2.4rem;
+    line-height: 1.2;
+    margin-bottom: 16px;
+}
+
+.about-header p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+}
+
+.about-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.about-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 28px 24px;
+    box-shadow: var(--shadow-elevated);
+    transition: var(--transition-smooth);
+}
+
+.about-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent-pop);
+}
+
+.about-icon {
+    background: var(--accent-light);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    background-color: var(--accent-pop);;
+}
+
+.about-icon svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: var(--accent-main);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+}
+
+.about-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.about-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}

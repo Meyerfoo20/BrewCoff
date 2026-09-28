@@ -79,7 +79,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             renderProducts(products);
-            initCanvas();
+            if (typeof initCanvas === "function") initCanvas();
         });
 
         function renderProducts(items) {

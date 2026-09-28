@@ -120,7 +120,7 @@
             document.getElementById("detailTitle").innerText = product.name;
             document.getElementById("detailPrice").innerText = `${product.price} kr`;
             document.getElementById("detailDesc").innerText = product.desc;
-
+            
             // Koppla "Lägg till"-knappen på produktsidan
             const addBtn = document.getElementById("detailAddToCartBtn");
             addBtn.onclick = function() {
@@ -153,34 +153,9 @@
         }
 
         function searchProducts(query) {
-            const filtered = products.filter(p =>
-                p.name.toLowerCase().includes(query.toLowerCase()) ||
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(query.toLowerCase()) || 
                 p.desc.toLowerCase().includes(query.toLowerCase())
             );
             renderProducts(filtered);
-}
-function scrollToSection(id) {
-    const mainView = document.getElementById("mainView");
-    if (mainView.style.display === "none") {
-        mainView.style.display = "block";
-        document.getElementById("productDetailView").style.display = "none";
-    }
-    setTimeout(() => {
-        document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-    }, 30);
-}
-
-// Scrollar till toppen av sidan (används av loggan)
-function scrollToTop() {
-    const mainView = document.getElementById("mainView");
-    if (mainView.style.display === "none") {
-        mainView.style.display = "block";
-        document.getElementById("productDetailView").style.display = "none";
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-// Ger navbaren en skugga när man scrollat ner
-window.addEventListener("scroll", () => {
-    document.querySelector(".navbar").classList.toggle("scrolled", window.scrollY > 10);
-});
+        }

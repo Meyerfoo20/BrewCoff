@@ -435,7 +435,84 @@
 
         <!-- Custom Mugg Jakob -->
         <section id="studio" class="custom-studio-section">
+            <div class="studio-wrap">
+                <div class="studio-header">
+                    <span class="studio-eyebrow">BrewCoff Studio</span>
+                    <h2>Tillverka din egen mugg</h2>
+                    <p>Skriv din egen text eller ladda upp en bild – vi trycker den på en klassisk BrewCoff-porslinsmugg i färgen du vill.</p>
+                </div>
 
+                <div class="studio-card">
+                    <div class="studio-preview">
+                        <canvas id="studioCanvas" width="660" height="660"></canvas>
+                        <span class="studio-preview-note">Förhandsvisning</span>
+                    </div>
+
+                    <div class="studio-controls">
+                        <div class="studio-field">
+                            <label>1. Välj design</label>
+                            <div class="studio-seg">
+                                <button type="button" class="studio-seg-btn active" data-mode="text" onclick="studioSetMode('text')">Text</button>
+                                <button type="button" class="studio-seg-btn" data-mode="image" onclick="studioSetMode('image')">Egen bild</button>
+                            </div>
+
+                            <div class="studio-mode-panel" id="studioTextPanel">
+                                <div class="studio-input-row">
+                                    <input type="text" id="studioText" maxlength="32" placeholder="Skriv din text, t.ex. Världens bästa mamma" oninput="studioOnTextInput()">
+                                    <span class="studio-counter" id="studioCounter">0/32</span>
+                                </div>
+                                <div class="studio-range-row">
+                                    <label for="studioFontSize">Storlek</label>
+                                    <input type="range" id="studioFontSize" min="24" max="72" value="44" oninput="studioOnFontResize()">
+                                </div>
+                                <select class="studio-select" id="studioFont" onchange="studioOnFontChange()">
+                                    <option value="serif">Elegant serif</option>
+                                    <option value="serif-italic">Kursiv serif</option>
+                                    <option value="sans">Modern sans</option>
+                                </select>
+                            </div>
+
+                            <div class="studio-mode-panel hidden" id="studioImagePanel">
+                                <label class="studio-dropzone" for="studioFile">
+                                    <input type="file" id="studioFile" accept="image/*" onchange="studioOnFile(this)" hidden>
+                                    <span class="studio-dropzone-icon">🖼️</span>
+                                    <span>Ladda upp en bild (PNG eller JPG)</span>
+                                    <small>Skärpast: logotyper och icikoner med tydlig kontur</small>
+                                </label>
+                                <span class="studio-filename" id="studioFileName"></span>
+                            </div>
+                        </div>
+
+                        <div class="studio-field">
+                            <label>2. Muggfärg</label>
+                            <div class="studio-swatches" id="studioMugSwatches"></div>
+                        </div>
+
+                        <div class="studio-field" id="studioTextColorField">
+                            <label>3. Tryckfärg</label>
+                            <div class="studio-swatches" id="studioTextSwatches"></div>
+                            <label class="studio-custom-color">
+                                <input type="color" id="studioCustomColor" value="#181c19" oninput="studioOnCustomColor(this.value)">
+                                <span>Egen färg</span>
+                            </label>
+                        </div>
+
+                        <div class="studio-actions">
+                            <div class="studio-price">
+                                <strong>149 kr</strong>
+                                <span>inkl. tryck</span>
+                            </div>
+                            <div class="studio-btns">
+                                <button type="button" class="studio-btn-primary" onclick="studioAddToCart()">Lägg till i varukorg</button>
+                                <button type="button" class="studio-btn-ghost" onclick="studioDownload()">Ladda ner förhandsvisning</button>
+                            </div>
+                            <button type="button" class="studio-reset" onclick="studioReset()">Återställ design</button>
+                            <p class="studio-status" id="studioStatus"></p>
+                            <p class="studio-fineprint">Leveranstid för personliga muggar: 5–7 dagar. Förhandsvisningen är en guide – det slutliga trycket kan variera något.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Om oss Rasmus -->

@@ -8,63 +8,48 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        :root {
-        --bg-main: #f8f6f0;
-        --bg-alt: #eee8dc;
-        --bg-card: #ffffff;
-        --bg-glass: rgba(248, 246, 240, 0.82);
-        --text-main: #181c19;
-        --text-muted: #56615a;
-        --border-color: #ded8cb;
-        --shadow-elevated: 0 12px 32px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02);
-        --btn-text: #ffffff;
-        --bg-footer: #211612;
-        --accent-main: #3b2720;
-        --accent-hover: #54382e;
-        --accent-light: #eee5e0;
-        --accent-pop: #d97706;
-        --radius-sm: 8px;
-        --radius-md: 16px;
-        --radius-lg: 24px;
-        --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        background-color: var(--bg-main);
-        color: var(--text-main);
-        line-height: 1.6;
-        overflow-x: hidden;
-    }
-
-    h1, h2, h3, .font-serif {
-        font-family: 'Playfair Display', serif;
-    }
-    </style>
 </head>
 <body>
 
     <div class="top-bar">
-        ☕ Fri frakt vid beställningar över 299 kr | Snabb leverans 1-3 vardagar
+        Snabb leverans 1-3 vardagar
     </div>
 
     <!-- Navbar Rasmus -->
     <nav class="navbar">
-        
+        <div class="navbar-inner">
+            <button class="navbar-logo" onclick="scrollToTop()">
+                <span class="logo-icon">☕</span>
+                BrewCoff
+            </button>
+            <div class="navbar-links">
+                <button class="navbar-link" onclick="scrollToSection('produkter')">Produkter</button>
+                <button class="navbar-link" onclick="scrollToSection('studio')">Custom mugg</button>
+                <button class="navbar-link" onclick="scrollToSection('om-oss')">Om oss</button>
+            </div>
+        </div>
     </nav>
 
     <!-- Huvudinnehåll Rasmus -->
     <div id="mainView">
         <!-- Hero -->
         <section class="hero">
-            
+            <div class="hero-text">
+                <span class="hero-badge">Hantverksmuggar &amp; kaffefilter</span>
+                <h1>Ditt kaffe förtjänar en mugg med personlighet</h1>
+                <p class="hero-subtitle">
+                    Hos BrewCoff designar vi porslinsmuggar och kaffefilter som gör
+                    vardagliga fikastunder lite finare. Enkel design, tåliga material
+                    och tryck som håller – disk för disk.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="scrollToSection('produkter')">Se alla produkter</button>
+                    <button class="btn-secondary" onclick="scrollToSection('om-oss')">Läs om oss</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="Images/brewcoff-mugg.png" alt="BrewCoff Classic Mugg">
+            </div>
         </section>
 
         <!-- Produkt Neo -->
@@ -86,7 +71,123 @@
 
         <!-- Custom Mugg Jakob -->
         <section id="studio" class="custom-studio-section">
+            <div class="studio-wrap">
+                <div class="studio-header">
+                    <span class="studio-eyebrow">BrewCoff Studio</span>
+                    <h2>Tillverka din egen mugg</h2>
+                    <p>Skriv din egen text eller ladda upp en bild – vi trycker den på en klassisk BrewCoff-porslinsmugg i färgen du vill.</p>
+                </div>
 
+                <div class="studio-card">
+                    <div class="studio-preview">
+                        <canvas id="studioCanvas" width="660" height="660"></canvas>
+                        <span class="studio-preview-note">Förhandsvisning</span>
+                    </div>
+
+                    <div class="studio-controls">
+                        <div class="studio-field">
+                            <label>1. Välj design</label>
+                            <div class="studio-seg">
+                                <button type="button" class="studio-seg-btn active" data-mode="text" onclick="studioSetMode('text')">Text</button>
+                                <button type="button" class="studio-seg-btn" data-mode="image" onclick="studioSetMode('image')">Egen bild</button>
+                            </div>
+
+                            <div class="studio-mode-panel" id="studioTextPanel">
+                                <div class="studio-input-row">
+                                    <input type="text" id="studioText" maxlength="32" placeholder="Skriv din text, t.ex. Världens bästa mamma" oninput="studioOnTextInput()">
+                                    <span class="studio-counter" id="studioCounter">0/32</span>
+                                </div>
+                                <div class="studio-range-row">
+                                    <label for="studioFontSize">Storlek</label>
+                                    <input type="range" id="studioFontSize" min="24" max="72" value="44" oninput="studioOnFontResize()">
+                                </div>
+                                <select class="studio-select" id="studioFont" onchange="studioOnFontChange()">
+                                    <option value="serif">Elegant serif</option>
+                                    <option value="serif-italic">Kursiv serif</option>
+                                    <option value="sans">Modern sans</option>
+                                </select>
+                            </div>
+
+                            <div class="studio-mode-panel hidden" id="studioImagePanel">
+                                <label class="studio-dropzone" for="studioFile">
+                                    <input type="file" id="studioFile" accept="image/*" onchange="studioOnFile(this)" hidden>
+                                    <span class="studio-dropzone-icon">🖼️</span>
+                                    <span>Ladda upp en bild (PNG eller JPG)</span>
+                                    <small>Skärpast: logotyper och icikoner med tydlig kontur</small>
+                                </label>
+                                <span class="studio-filename" id="studioFileName"></span>
+                            </div>
+                        </div>
+
+                        <div class="studio-field">
+                            <label>2. Muggfärg</label>
+                            <div class="studio-swatches" id="studioMugSwatches"></div>
+                        </div>
+
+                        <div class="studio-field" id="studioTextColorField">
+                            <label>3. Tryckfärg</label>
+                            <div class="studio-swatches" id="studioTextSwatches"></div>
+                            <label class="studio-custom-color">
+                                <input type="color" id="studioCustomColor" value="#181c19" oninput="studioOnCustomColor(this.value)">
+                                <span>Egen färg</span>
+                            </label>
+                        </div>
+
+                        <div class="studio-actions">
+                            <div class="studio-price">
+                                <strong>149 kr</strong>
+                                <span>inkl. tryck</span>
+                            </div>
+                            <div class="studio-btns">
+                                <button type="button" class="studio-btn-primary" onclick="studioAddToCart()">Lägg till i varukorg</button>
+                                <button type="button" class="studio-btn-ghost" onclick="studioDownload()">Ladda ner förhandsvisning</button>
+                            </div>
+                            <button type="button" class="studio-reset" onclick="studioReset()">Återställ design</button>
+                            <p class="studio-status" id="studioStatus"></p>
+                            <p class="studio-fineprint">Leveranstid för personliga muggar: 5–7 dagar. Förhandsvisningen är en guide – det slutliga trycket kan variera något.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Om oss Rasmus -->
+        <section id="om-oss" class="about-section">
+            <div class="about-inner">
+                <div class="about-header">
+                    <span class="section-tag">Om oss</span>
+                    <h2>Kaffe med hjärta, muggar med karaktär</h2>
+                    <p>
+                        BrewCoff startade med en enkel idé: att fika ska vara en liten stund
+                        för dig själv. Vi designar våra muggar i små serier och lägger stor
+                        vikt vid både materialkvalitet och hållbarhet, så att din mugg håller
+                        i många kaffebryggor.
+                    </p>
+                </div>
+                <div class="about-cards">
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>
+                        </div>
+                        <h3>Hantverkskvalitet</h3>
+                        <p>Våra muggar formas i tålig porslin och kontrolleras för hand innan de skickas vidare till dig.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                        </div>
+                        <h3>Omsorg om miljön</h3>
+                        <p>Vi packar i papper, inte plast, och väljer material som håller i många år – inte bara en säsong.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                        </div>
+                        <h3>Snabb leverans</h3>
+                        <p>Vi skickar din order inom 1–3 vardagar, och frakten är gratis vid köp över 299 kr.</p>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 
@@ -105,7 +206,7 @@
                     <h1 id="detailTitle"></h1>
                     <p id="detailPrice" class="product-price" style="font-size: 1.8rem; margin: 16px 0;"></p>
                     <p id="detailDesc" style="color: var(--text-muted); margin-bottom: 24px; font-size: 1.05rem;"></p>
-                    
+
                     <div class="detail-actions">
                         <button class="btn-primary" id="detailAddToCartBtn" style="padding: 14px 32px; font-size: 1rem;">Lägg till i varukorg</button>
                     </div>
@@ -116,98 +217,49 @@
 
     <!-- Varukorg Anton Gren -->
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-    <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Varukorg">
+        <div class="cart-header">
+            <h2 class="cart-title">Varukorg</h2>
+            <button class="cart-close-btn" onclick="toggleCart()" aria-label="Stäng varukorgen">&times;</button>
+        </div>
 
+        <div class="cart-items" id="cartItems"></div>
+
+        <div class="cart-footer" id="cartFooter">
+            <p class="cart-free-shipping">☕ Fri frakt vid beställningar över 299 kr</p>
+            <p class="cart-shipping-note" id="shippingNote"></p>
+            <div class="cart-progress-track">
+                <div class="cart-progress-fill" id="shippingProgress"></div>
+            </div>
+            <div class="cart-total-row">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">0 kr</span>
+            </div>
+            <div class="cart-total-row">
+                <span>Frakt</span>
+                <span id="cartShipping">–</span>
+            </div>
+            <div class="cart-total-row cart-grand-total">
+                <span>Totalt</span>
+                <span id="cartTotal">0 kr</span>
+            </div>
+            <button class="cart-checkout-btn" onclick="checkout()">Till kassan</button>
+        </div>
     </div>
+
+    <!-- Flytande varukorgsknapp -->
+    <button class="cart-fab" onclick="toggleCart()" aria-label="Öppna varukorgen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span class="cart-count" id="cartCount" style="display:none;">0</span>
+    </button>
 
 
     <!-- Footer Anton Blad -->
-    <footer>
-<!-- I din <head> -->
-<style>
-  .site-footer {
-    background: #2b1d16;
-    color: #d8c9bc;
-    font-family: system-ui, -apple-system;
-    padding: 3rem 1.5rem 1.5rem;
-  }
-
-  .footer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .footer-brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #fff;
-    margin: 0 0 0.5rem;
-  }
-
-  .footer-col h3 {
-    color: #fff;
-    font-size: 1rem;
-    margin: 0 0 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .footer-col ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .footer-col a {
-    color: #d8c9bc;
-    text-decoration: none;
-    line-height: 2;
-  }
-
-  .footer-col a:hover {
-    color: #fff;
-    text-decoration: underline;
-  }
-
-  
-
-  .footer-bottom {
-    max-width: 1200px;
-    margin: 2.5rem auto 0;
-    padding-top: 1.5rem;
-    border-top: 1px solid #4a382b;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-between;
-    font-size: 0.85rem;
-  }
-
-  .footer-bottom a {
-    color: #a08d7d;
-    text-decoration: none;
-    margin-left: 1rem;
-  }
-
-  .footer-bottom a:hover {
-    color: #fff;
-  }
-</style>
-
-<script>
-  function goToCategory(pillText) {
-    const pill = [...document.querySelectorAll('.filter-pill')]
-      .find(p => p.textContent.trim() === pillText);
-    if (pill) pill.click();
-  }
-</script>
-
-
-<!-- Före </body> -->
-<footer class="site-footer">
+    <footer class="site-footer">
   <div class="footer-grid">
     <div class="footer-col">
       <p class="footer-brand">BrewCoff</p>
@@ -221,7 +273,7 @@
 <li><a href="#produkter" onclick="goToCategory('Kaffefilter')">Filter</a></li>
 
         <li><a href="#egendesign">Egen Design</a></li>
-        
+
       </ul>
     </div>
 
@@ -231,7 +283,7 @@
         <li><a href="#frakt">Frakt &amp; leverans</a></li>
         <li><a href="#returer">Returer och Reklamation</a></li>
         <li><a href="#köpvillkor">Köpvillkor</a></li>
-        
+
       </ul>
     </div>
 
@@ -255,9 +307,8 @@
   </div>
 </footer>
 
-    </footer>
-
     <!-- JavaScript -->
     <script src="script.js"></script>
+
 </body>
 </html>

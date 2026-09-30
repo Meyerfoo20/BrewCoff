@@ -648,28 +648,10 @@ if (typeof cart !== 'undefined' && Array.isArray(cart)) {
 if (added) {
 if (typeof showToast === 'function') showToast('Din custom mugg lades i varukorgen');
 else studioStatus('✓ Din mugg ligger i varukorgen!');
-// Öppna varukorgen så man direkt ser att muggen kom med
-if (typeof toggleCart === 'function') toggleCart(true);
 } else {
-studioStatus('Varukorgen är inte klar ännu - ladda ner din mugg istället.', true);
+studioStatus('Varukorgen är inte klar ännu - försök igen.', true);
 }
 }
-function studioDownload() {
-const canvas = document.getElementById('studioCanvas');
-let href;
-try {
-    href = canvas.toDataURL('image/png');
-} catch (e) {
-    studioStatus('Kunde inte spara förhandsvisningen – öppna sidan via en lokal server (t.ex. VS Code Live Server) och försök igen.', true);
-    return;
-}
-const link = document.createElement('a');
-link.href = href;
-link.download = 'brewcoff-personlig-mugg.png';
-link.click();
-studioStatus('✓ Förhandsvisning laddad ner!');
-}
-
 function studioStatus(msg, isError) {
 const el = document.getElementById('studioStatus');
 if (!el) return;

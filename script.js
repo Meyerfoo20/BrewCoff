@@ -927,3 +927,31 @@ function showToast(message) {
 // ===== Init =====
 loadCartFromStorage();
 renderCart();
+
+// ===== Menyknapp & sidmeny (Rasmus) =====
+(function () {
+    const menuBtn = document.getElementById('menuBtn');
+    const overlay = document.getElementById('menuOverlay');
+    const sidebar = document.getElementById('menuSidebar');
+    const closeBtn = document.getElementById('menuClose');
+    if (!menuBtn || !overlay || !sidebar || !closeBtn) return;
+
+    function setMenu(open) {
+        overlay.classList.toggle('open', open);
+        sidebar.classList.toggle('open', open);
+        document.body.classList.toggle('menu-open', open);
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    menuBtn.addEventListener('click', () => {
+        setMenu(!sidebar.classList.contains('open'));
+    });
+
+    closeBtn.addEventListener('click', () => setMenu(false));
+    overlay.addEventListener('click', () => setMenu(false));
+
+    // Stäng sidmenyn med Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setMenu(false);
+    });
+})();

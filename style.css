@@ -1463,3 +1463,189 @@ html {
         height: 42px;
     }
 }
+
+/* ===== Menyknapp & sidmeny (Rasmus) ===== */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Menyknapp: tandhjul (cog) ritad som SVG med pointer-events: none,
+   så att hela cirkeln (44x44 px) är ett enda klickbart område */
+.menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    flex-shrink: 0;
+}
+
+.menu-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: var(--text-main);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none; /* ikonen ska inte blockera klick på knappen */
+}
+
+.menu-btn:hover {
+    border-color: var(--accent-main);
+    background: var(--accent-light);
+}
+
+/* Inget transform här — en krympning gör att kanten glider
+   undan kursorn och klicket går förlorat */
+.menu-btn:active {
+    border-color: var(--accent-main);
+    background: var(--accent-light);
+}
+
+.menu-btn:focus-visible {
+    outline: 2px solid var(--accent-main);
+    outline-offset: 2px;
+}
+
+/* Sidmeny: skymningslager + panel som glider in från höger.
+   visibility: hidden när den är stängd så att den inte är fokuserbar */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(24, 28, 25, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+    z-index: 1100; /* ovanför varukorgen (1001-1003) */
+}
+
+.sidebar-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 320px;
+    max-width: 85vw;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border-color);
+    box-shadow: -12px 0 40px rgba(24, 28, 25, 0.12);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.35s;
+    z-index: 1101;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Låser sidans scroll medan menyn är öppen */
+body.menu-open {
+    overflow: hidden;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+
+.sidebar-header h2 {
+    font-size: 1.5rem;
+    color: var(--text-main);
+}
+
+.sidebar-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+    flex-shrink: 0;
+}
+
+.sidebar-close:hover {
+    background: var(--accent-light);
+    border-color: var(--accent-main);
+}
+
+.sidebar-close svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--text-main);
+    stroke-width: 2;
+    stroke-linecap: round;
+    pointer-events: none; /* ikonen ska inte blockera klick på knappen */
+}
+
+.sidebar-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 14px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition-smooth);
+}
+
+.sidebar-item:hover {
+    background: var(--accent-light);
+    color: var(--accent-main);
+}
+
+.sidebar-item svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+    pointer-events: none;
+}

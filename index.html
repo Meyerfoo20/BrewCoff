@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
@@ -24,13 +25,61 @@
                 <img class="logo-icon" src="Images/Brewcoff-Logotyp.png" alt="BrewCoff logotyp">
                 BrewCoff
             </button>
-            <div class="navbar-links">
-                <button class="navbar-link" onclick="scrollToSection('produkter')">Produkter</button>
-                <button class="navbar-link" onclick="scrollToSection('studio')">Custom mugg</button>
-                <button class="navbar-link" onclick="scrollToSection('om-oss')">Om oss</button>
+            <div class="navbar-right">
+                <div class="navbar-links">
+                    <button class="navbar-link" onclick="scrollToSection('produkter')">Produkter</button>
+                    <button class="navbar-link" onclick="scrollToSection('studio')">Custom mugg</button>
+                    <button class="navbar-link" onclick="scrollToSection('om-oss')">Om oss</button>
+                </div>
+                <button class="menu-btn" id="menuBtn" type="button" aria-label="Öppna meny" aria-expanded="false" aria-controls="menuSidebar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
             </div>
         </div>
     </nav>
+
+    <!-- Sidmeny Rasmus -->
+    <div class="sidebar-overlay" id="menuOverlay"></div>
+    <aside class="sidebar" id="menuSidebar" aria-label="Meny">
+        <div class="sidebar-header">
+            <h2>Meny</h2>
+            <button class="sidebar-close" id="menuClose" type="button" aria-label="Stäng meny">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <ul class="sidebar-list">
+            <li>
+                <button class="sidebar-item" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Logga in
+                </button>
+            </li>
+            <li>
+                <button class="sidebar-item" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    Ljust/mörkt läge
+                </button>
+            </li>
+            <li>
+                <button class="sidebar-item" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    Språk
+                </button>
+            </li>
+            <li>
+                <button class="sidebar-item" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Kontakta oss
+                </button>
+            </li>
+            <li>
+                <button class="sidebar-item" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                    Hjälp &amp; support
+                </button>
+            </li>
+        </ul>
+    </aside>
 
     <!-- Huvudinnehåll Rasmus -->
     <div id="mainView">

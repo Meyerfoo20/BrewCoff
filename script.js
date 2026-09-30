@@ -576,11 +576,42 @@ const small = document.createElement('canvas');
 small.width = size;
 small.height = size;
 small.getContext('2d').drawImage(canvas, 0, 0, size, size);
-return small.toDataURL('image/png');
+try {
+    return small.toDataURL('image/png');
+} catch (e) {
+    // "Tainted canvas" t.ex. om sidan öppnas via file:// –
+    // falla tillbaka på standardmuggen så muggen ändå hamnar i varukorgen
+    return 'Images/Stock-Mugg.png';
+}
 }
 
-const STUDIO_CART_ID = 9901; // Enkel numerisk id: varukorgens changeQty/removeFromCart
-// ritar item.id in i inline onclick-handlarna.
+const STUDIO_CART_ID = 9901; // Grund-id: studio-muggar får id 9901 + hash av designen
+// (numeriskt id krävs eftersom varukorgens changeQty/removeFromCart
+// ritar item.id in i inline onclick-handlarna)
+
+function studioDesignKey() {
+    // Unik nyckel för nuvarande design - samma design ger samma nyckel
+    return [
+        studioState.mode,
+        studioState.text,
+        studioState.fontSize,
+        studioState.font,
+        studioState.textColor,
+        studioState.mugColorId,
+        studioState.fileName
+    ].join('|');
+}
+
+function studioDesignId() {
+    // Samma design -> samma id (samma rad i varukorgen),
+    // olika design -> eget id så varje mugg blir sin egen rad
+    const key = studioDesignKey();
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+        hash = (hash * 31 + key.charCodeAt(i)) % 100000;
+    }
+    return STUDIO_CART_ID + hash;
+}
 
 function studioAddToCart() {
 // Varukorgsarrayen (let högre upp i filen) delas i samma scope,
@@ -588,14 +619,15 @@ function studioAddToCart() {
 let added = false;
 try {
 if (typeof cart !== 'undefined' && Array.isArray(cart)) {
-    const existing = cart.find(item => item.id === STUDIO_CART_ID);
+    const id = studioDesignId();
+    const existing = cart.find(item => item.id === id);
     if (existing) {
         existing.qty += 1;
         existing.desc = studioDesignSummary();
         existing.image = studioThumbnailDataURL(220);
     } else {
         cart.push({
-            id: STUDIO_CART_ID,
+            id: id,
             name: 'BrewCoff Custom Mugg',
             category: 'motiv',
             price: STUDIO_PRICE,
@@ -616,14 +648,23 @@ if (typeof cart !== 'undefined' && Array.isArray(cart)) {
 if (added) {
 if (typeof showToast === 'function') showToast('Din custom mugg lades i varukorgen');
 else studioStatus('✓ Din mugg ligger i varukorgen!');
+// Öppna varukorgen så man direkt ser att muggen kom med
+if (typeof toggleCart === 'function') toggleCart(true);
 } else {
 studioStatus('Varukorgen är inte klar ännu - ladda ner din mugg istället.', true);
 }
 }
 function studioDownload() {
 const canvas = document.getElementById('studioCanvas');
+let href;
+try {
+    href = canvas.toDataURL('image/png');
+} catch (e) {
+    studioStatus('Kunde inte spara förhandsvisningen – öppna sidan via en lokal server (t.ex. VS Code Live Server) och försök igen.', true);
+    return;
+}
 const link = document.createElement('a');
-link.href = canvas.toDataURL('image/png');
+link.href = href;
 link.download = 'brewcoff-personlig-mugg.png';
 link.click();
 studioStatus('✓ Förhandsvisning laddad ner!');
@@ -683,6 +724,18 @@ function loadCartFromStorage() {
                     price: product.price,
                     desc: product.desc,
                     image: product.image,
+                    qty: item.qty
+                });
+            } else if (item.id >= STUDIO_CART_ID && item.qty > 0) {
+                // Custom mugg från studio saknas i products – namn, pris,
+                // beskrivning och miniatyrbild sparas därför på item själv
+                cart.push({
+                    id: item.id,
+                    name: item.name || 'BrewCoff Custom Mugg',
+                    category: 'motiv',
+                    price: item.price || STUDIO_PRICE,
+                    desc: item.desc,
+                    image: item.image || 'Images/Stock-Mugg.png',
                     qty: item.qty
                 });
             }

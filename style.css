@@ -233,7 +233,9 @@
 }
 
 .navbar-logo .logo-icon {
-    font-size: 1.3rem;
+    height: 34px;
+    width: auto;
+    object-fit: contain;
 }
 
 .navbar-links {

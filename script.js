@@ -76,6 +76,8 @@ const products = [
 
 let cart = [];
 let activeCategory = 'all';
+let detailList = products;      // Produkten som visas i rutnätet just nu (används av pilarna)
+let currentDetailId = null;     // Produkten som visas på detaljsidan just nu
 
 document.addEventListener("DOMContentLoaded", () => {
     renderProducts(products);
@@ -85,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function renderProducts(items) {
     const container = document.getElementById("productContainer");
     container.innerHTML = "";
+    detailList = items;
 
     items.forEach(p => {
         const card = document.createElement("div");
@@ -110,6 +113,14 @@ function renderProducts(items) {
 function openProductDetail(productId) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
+    currentDetailId = productId;
+
+    // Position "x av y" + dölj pilarna om det bara är en produkt i listan
+    const idx = detailList.findIndex(p => p.id === productId);
+    document.getElementById("detailPosition").innerText =
+        (idx >= 0 ? idx + 1 : "–") + " av " + detailList.length;
+    const showNav = detailList.length > 1;
+    document.querySelectorAll(".detail-nav").forEach(b => b.style.display = showNav ? "flex" : "none");
 
     document.getElementById("detailImg").src = product.image;
     document.getElementById("detailImg").alt = product.name;
@@ -135,6 +146,22 @@ function showMainView() {
     document.getElementById("mainView").style.display = "block";
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// Hoppar till föregående/nästa produkt (går runt i listan)
+function navigateProduct(delta) {
+    if (detailList.length <= 1) return;
+    const idx = detailList.findIndex(p => p.id === currentDetailId);
+    const next = detailList[(idx + delta + detailList.length) % detailList.length];
+    openProductDetail(next.id);
+}
+
+// Piltangenter på produktsidan
+document.addEventListener('keydown', (e) => {
+    const view = document.getElementById("productDetailView");
+    if (!view || view.style.display === "none") return;
+    if (e.key === "ArrowLeft") navigateProduct(-1);
+    if (e.key === "ArrowRight") navigateProduct(1);
+});
 
 function filterCategory(cat, btn) {
     activeCategory = cat;

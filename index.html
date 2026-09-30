@@ -193,27 +193,37 @@
         </section>
     </div>
 
-    <!-- Intern Produktsida Rör ej -->
+    <!-- Intern Produktsida -->
     <div id="productDetailView" class="product-detail-view" style="display: none;">
         <div class="product-detail-container">
             <button class="back-btn" onclick="showMainView()">
                 &larr; Tillbaka till produkter
             </button>
+
+            <button class="detail-nav detail-nav-prev" onclick="navigateProduct(-1)" aria-label="Föregående produkt">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+
             <div class="product-detail-grid">
                 <div class="product-detail-img-box">
                     <img id="detailImg" src="" alt="">
                 </div>
                 <div class="product-detail-info">
-                    <span id="detailBadge" class="product-badge" style="position: static; display: inline-block; margin-bottom: 12px;"></span>
-                    <h1 id="detailTitle"></h1>
-                    <p id="detailPrice" class="product-price" style="font-size: 1.8rem; margin: 16px 0;"></p>
-                    <p id="detailDesc" style="color: var(--text-muted); margin-bottom: 24px; font-size: 1.05rem;"></p>
+                    <span id="detailBadge" class="product-badge detail-badge"></span>
+                    <h1 id="detailTitle" class="detail-title"></h1>
+                    <p id="detailPosition" class="detail-position"></p>
+                    <p id="detailPrice" class="product-price detail-price"></p>
+                    <p id="detailDesc" class="detail-desc"></p>
 
                     <div class="detail-actions">
-                        <button class="btn-primary" id="detailAddToCartBtn" style="padding: 14px 32px; font-size: 1rem;">Lägg till i varukorg</button>
+                        <button class="btn-primary detail-add-btn" id="detailAddToCartBtn">Lägg till i varukorg</button>
                     </div>
                 </div>
             </div>
+
+            <button class="detail-nav detail-nav-next" onclick="navigateProduct(1)" aria-label="Nästa produkt">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
         </div>
     </div>
 

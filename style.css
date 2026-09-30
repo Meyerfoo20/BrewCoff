@@ -743,11 +743,25 @@
 .studio-custom-color input[type="color"] {
     width: 34px;
     height: 34px;
-    padding: 2px;
+    padding: 0;
     border: 2px solid var(--border-color);
     border-radius: 50%;
-    background: var(--bg-card);
+    background: transparent;
     cursor: pointer;
+}
+
+.studio-custom-color input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.studio-custom-color input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+}
+
+.studio-custom-color input[type="color"]::-moz-color-swatch {
+    border: none;
+    border-radius: 50%;
 }
 
 /* ---- Pris & knappar ---- */

@@ -11,6 +11,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
+    <!-- Tema Rasmus: tillämpa sparat tema innan sidan målas (undviker flimmer) -->
+    <script>
+        (function () {
+            var theme = localStorage.getItem('brewcoff-theme');
+            if (theme) document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body>
 
@@ -55,7 +62,7 @@
                 </button>
             </li>
             <li>
-                <button class="sidebar-item" type="button">
+                <button class="sidebar-item" type="button" id="themeToggle">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                     Ljust/mörkt läge
                 </button>
@@ -67,13 +74,13 @@
                 </button>
             </li>
             <li>
-                <button class="sidebar-item" type="button">
+                <button class="sidebar-item" type="button" data-goto="footer">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     Kontakta oss
                 </button>
             </li>
             <li>
-                <button class="sidebar-item" type="button">
+                <button class="sidebar-item" type="button" data-goto="footer">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
                     Hjälp &amp; support
                 </button>

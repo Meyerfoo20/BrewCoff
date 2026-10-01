@@ -932,6 +932,29 @@ renderCart();
     closeBtn.addEventListener('click', () => setMenu(false));
     overlay.addEventListener('click', () => setMenu(false));
 
+    // Ljust/mörkt läge – byt tema och spara valet i localStorage
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const root = document.documentElement;
+            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('brewcoff-theme', next);
+        });
+    }
+
+    // "Kontakta oss" & "Hjälp & support" – skrolla till footern och stäng menyn
+    document.querySelectorAll('.sidebar-item[data-goto]').forEach((item) => {
+        item.addEventListener('click', () => {
+            setMenu(false);
+            const target =
+                item.dataset.goto === 'footer'
+                    ? document.querySelector('.site-footer')
+                    : document.getElementById(item.dataset.goto);
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
     // Stäng sidmenyn med Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') setMenu(false);

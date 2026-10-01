@@ -3,91 +3,73 @@ const products = [
     {
         id: 1,
         name: "BrewCoff Clean White",
-        nameEn: "BrewCoff Clean White",
         category: "motiv",
         price: 89,
         desc: "Stilren vit porslinsmugg utan tryck.",
-        descEn: "A clean white porcelain mug with no print.",
         image: "Images/Stock-Mugg.png"
     },
     {
         id: 2,
         name: "BrewCoff Classic Mugg",
-        nameEn: "BrewCoff Classic Mug",
         category: "motiv",
         price: 99,
         desc: "Klassisk vit porslinsmugg med den bruna BrewCoff-logotypen.",
-        descEn: "A classic white porcelain mug with the brown BrewCoff logo.",
         image: "Images/brewcoff-mugg.png"
     },
     {
         id: 3,
         name: "BrewCoff Duo-Tone Mugg",
-        nameEn: "BrewCoff Duo-Tone Mug",
         category: "motiv",
         price: 119,
         desc: "Tvåfärgad porslinsmugg med brun bas och BrewCoff-tryck.",
-        descEn: "Two-tone porcelain mug with a brown base and BrewCoff print.",
         image: "Images/brewcoff-mugg-half.png"
     },
     {
         id: 4,
         name: "BrewCoff Mugg, One More?",
-        nameEn: "BrewCoff Mug, One More?",
         category: "motiv",
         price: 119,
         desc: "Klassisk brun porslinsmugg med vitt tryck.",
-        descEn: "A classic brown porcelain mug with white print.",
         image: "Images/brewcoff-mugg-onemore.png"
     },
     {
         id: 5,
         name: "BrewCoff Mugg, Fika",
-        nameEn: "BrewCoff Mug, Fika",
         category: "motiv",
         price: 129,
         desc: "Klassisk brun porslinsmugg med vitt tryck och fika dekaler",
-        descEn: "A classic brown porcelain mug with white print and fika decals",
         image: "Images/brewcoff-mugg-fika.png"
     },
     {
         id: 6,
         name: "BrewCoff Mugg, Irish Coffee",
-        nameEn: "BrewCoff Mug, Irish Coffee",
         category: "motiv",
         price: 129,
         desc: "Klassisk brun porslinsmugg med vitt, irish coffe tryck",
-        descEn: "A classic brown porcelain mug with a white Irish coffee print",
         image: "Images/brewcoff-mugg-irish.png"
     },
     {
         id: 7,
         name: "Kaffe Filter",
-        nameEn: "Coffee Filters",
         category: "filter",
         price: 99,
         desc: "100st",
-        descEn: "100 pcs",
         image: "Images/coffe-filter.png"
     },
     {
         id: 8,
         name: "Kaffe Filter",
-        nameEn: "Coffee Filters",
         category: "filter",
         price: 189,
         desc: "200st",
-        descEn: "200 pcs",
         image: "Images/coffe-filter.png"
     },
     {
         id: 9,
         name: "Kaffe Filter",
-        nameEn: "Coffee Filters",
         category: "filter",
         price: 279,
         desc: "300st",
-        descEn: "300 pcs",
         image: "Images/coffe-filter.png"
     },
 ];
@@ -96,284 +78,6 @@ let cart = [];
 let activeCategory = 'all';
 let detailList = products;      // Produkten som visas i rutnätet just nu (används av pilarna)
 let currentDetailId = null;     // Produkten som visas på detaljsidan just nu
-
-// ===== Språk (Svenska/Engelska) =====
-const LANG_KEY = 'brewcoff-lang';
-let currentLang = 'sv';
-try {
-    const savedLang = localStorage.getItem(LANG_KEY);
-    if (savedLang === 'sv' || savedLang === 'en') currentLang = savedLang;
-} catch (e) { /* localStorage tillgängligt ej */ }
-
-const I18N = {
-    sv: {
-        topbar: 'Snabb leverans 1-3 vardagar',
-        navProducts: 'Produkter',
-        navCustom: 'Custom mugg',
-        navAbout: 'Om oss',
-        openMenu: 'Öppna meny',
-        closeMenu: 'Stäng meny',
-        menuTitle: 'Meny',
-        login: 'Logga in',
-        theme: 'Ljust/mörkt läge',
-        language: 'Språk',
-        contact: 'Kontakta oss',
-        help: 'Hjälp & support',
-        logout: 'Logga ut',
-        closeLogin: 'Stäng inloggning',
-        email: 'E-post',
-        emailPlaceholder: 'din@epost.se',
-        password: 'Lösenord',
-        loginError: 'Ange en giltig e-post och ett lösenord',
-        heroBadge: 'Hantverksmuggar & kaffefilter',
-        heroTitle: 'Ditt kaffe förtjänar en mugg med personlighet',
-        heroSubtitle: 'Hos BrewCoff designar vi porslinsmuggar och kaffefilter som gör vardagliga fikastunder lite finare. Enkel design, tåliga material och tryck som håller – disk för disk.',
-        heroCta: 'Se alla produkter',
-        heroCta2: 'Läs om oss',
-        all: 'Alla',
-        mugs: 'Muggar',
-        filters: 'Kaffefilter',
-        searchPlaceholder: 'Sök mugg eller filter...',
-        studioEyebrow: 'BrewCoff Studio',
-        studioTitle: 'Tillverka din egen mugg',
-        studioDesc: 'Skriv din egen text eller ladda upp en bild – vi trycker den på en klassiska BrewCoff-porslinsmugg i färgen du vill.',
-        studioPreview: 'Förhandsvisning',
-        studioStep1: '1. Välj design',
-        studioTextMode: 'Text',
-        studioImageMode: 'Egen bild',
-        studioTextPlaceholder: 'Skriv din text, t.ex. Världens bästa mamma',
-        studioSize: 'Storlek',
-        fontSerif: 'Elegant serif',
-        fontItalic: 'Kursiv serif',
-        fontSans: 'Modern sans',
-        studioUpload: 'Ladda upp en bild (PNG eller JPG)',
-        studioUploadNote: 'Skärpast: logotyper och icikoner med tydlig kontur',
-        studioStep2: '2. Muggfärg',
-        studioStep3: '3. Tryckfärg',
-        studioCustomColor: 'Egen färg',
-        studioPrintIncluded: 'inkl. tryck',
-        addToCart: 'Lägg till i varukorg',
-        studioReset: 'Återställ design',
-        studioFineprint: 'Leveranstid för personliga muggar: 5–7 dagar. Förhandsvisningen är en guide – det slutliga trycket kan variera något.',
-        aboutTitle: 'Kaffe med hjärta, muggar med karaktär',
-        aboutText: 'BrewCoff startade med en enkel idé: att fika ska vara en liten stund för dig själv. Vi designar våra muggar i små serier och lägger stor vikt vid både materialkvalitet och hållbarhet, så att din mugg håller i många kaffebryggor.',
-        aboutCard1Title: 'Hantverkskvalitet',
-        aboutCard1Text: 'Våra muggar formas i tålig porslin och kontrolleras för hand innan de skickas vidare till dig.',
-        aboutCard2Title: 'Omsorg om miljön',
-        aboutCard2Text: 'Vi packar i papper, inte plast, och väljer material som håller i många år – inte bara en säsong.',
-        aboutCard3Title: 'Snabb leverans',
-        aboutCard3Text: 'Vi skickar din order inom 1–3 vardagar, och frakten är gratis vid köp över 299 kr.',
-        backToProducts: '← Tillbaka till produkter',
-        prevProduct: 'Föregående produkt',
-        nextProduct: 'Nästa produkt',
-        cart: 'Varukorg',
-        closeCart: 'Stäng varukorgen',
-        openCart: 'Öppna varukorgen',
-        freeShipping: '☕ Fri frakt vid beställningar över 299 kr',
-        subtotal: 'Subtotal',
-        shipping: 'Frakt',
-        total: 'Totalt',
-        checkout: 'Till kassan',
-        footerTagline: 'Brinner för härliga koppar kaffe och seriösa kaffefilter för dig som tar kaffe på allvar',
-        footerShop: 'Handla',
-        footerCustom: 'Egen Design',
-        footerService: 'Kundservice',
-        footerShipping: 'Frakt & leverans',
-        footerReturns: 'Returer och Reklamation',
-        footerTerms: 'Köpvillkor',
-        footerAddress: 'Helsingborg, Sverige',
-        footerCopyright: '© 2025 BrewCoff. Alla rättigheter förbehållna. Bryggat med omsorg.',
-        footerPrivacy: 'Sekretesspolicy',
-        footerTermsShort: 'Villkor',
-        mug: 'Mugg',
-        filter: 'Filter',
-        addShort: 'Lägg till',
-        of: 'av',
-        cartEmpty: 'Din varukorg är tom.',
-        continueShopping: 'Fortsätt handla',
-        perPiece: ' / st',
-        decreaseQty: 'Minska antal',
-        increaseQty: 'Öka antal',
-        remove: 'Ta bort',
-        freeShippingLabel: 'Fri frakt',
-        qualifyNote: 'Du har kvalificerat dig för fri frakt!',
-        moreForFreePrefix: 'Köp för ',
-        moreForFreeSuffix: ' till för fri frakt',
-        addedToCart: ' lades i varukorgen',
-        customMugAdded: 'Din custom mugg lades i varukorgen',
-        cartNotReady: 'Varukorgen är inte klar ännu - försök igen.',
-        studioResetDone: 'Designen är återställd.',
-        summaryTextPrefix: 'Personlig mugg – tryckt text: "',
-        summaryImagePrefix: 'Personlig mugg – tryckt egen bild',
-        checkoutThanks: 'Tack för din beställning!\n\nTotalt: ',
-        checkoutDemo: '\n\n(Detta är en demo – ingen betalning görs.)',
-        welcomePrefix: 'Välkommen, ',
-        loggedOut: 'Du har loggat ut',
-        mugColorAria: 'Muggfärg ',
-        printColorAria: 'Tryckfärg '
-    },
-    en: {
-        topbar: 'Fast delivery 1-3 business days',
-        navProducts: 'Products',
-        navCustom: 'Custom mug',
-        navAbout: 'About us',
-        openMenu: 'Open menu',
-        closeMenu: 'Close menu',
-        menuTitle: 'Menu',
-        login: 'Log in',
-        theme: 'Light/dark mode',
-        language: 'Language',
-        contact: 'Contact us',
-        help: 'Help & support',
-        logout: 'Log out',
-        closeLogin: 'Close login',
-        email: 'Email',
-        emailPlaceholder: 'you@email.com',
-        password: 'Password',
-        loginError: 'Please enter a valid email and a password',
-        heroBadge: 'Handcrafted mugs & coffee filters',
-        heroTitle: 'Your coffee deserves a mug with personality',
-        heroSubtitle: 'At BrewCoff we design porcelain mugs and coffee filters that make everyday coffee breaks a little nicer. Simple design, durable materials and prints that last – wash after wash.',
-        heroCta: 'See all products',
-        heroCta2: 'Read about us',
-        all: 'All',
-        mugs: 'Mugs',
-        filters: 'Coffee filters',
-        searchPlaceholder: 'Search for mugs or filters...',
-        studioEyebrow: 'BrewCoff Studio',
-        studioTitle: 'Create your own mug',
-        studioDesc: 'Write your own text or upload an image – we print it on a classic BrewCoff porcelain mug in the color you want.',
-        studioPreview: 'Preview',
-        studioStep1: '1. Choose design',
-        studioTextMode: 'Text',
-        studioImageMode: 'Your image',
-        studioTextPlaceholder: 'Write your text, e.g. World\'s best mom',
-        studioSize: 'Size',
-        fontSerif: 'Elegant serif',
-        fontItalic: 'Italic serif',
-        fontSans: 'Modern sans',
-        studioUpload: 'Upload an image (PNG or JPG)',
-        studioUploadNote: 'Works best: logos and icons with clear outlines',
-        studioStep2: '2. Mug color',
-        studioStep3: '3. Print color',
-        studioCustomColor: 'Custom color',
-        studioPrintIncluded: 'incl. printing',
-        addToCart: 'Add to cart',
-        studioReset: 'Reset design',
-        studioFineprint: 'Delivery time for personalized mugs: 5-7 days. The preview is a guide – the final print may vary slightly.',
-        aboutTitle: 'Coffee with heart, mugs with character',
-        aboutText: 'BrewCoff started with a simple idea: that fika should be a little moment for yourself. We design our mugs in small batches and put great weight on both material quality and sustainability, so that your mug lasts for many brews.',
-        aboutCard1Title: 'Craftsmanship',
-        aboutCard1Text: 'Our mugs are shaped in durable porcelain and hand-checked before they are sent on to you.',
-        aboutCard2Title: 'Care for the environment',
-        aboutCard2Text: 'We pack in paper, not plastic, and choose materials that last for many years – not just one season.',
-        aboutCard3Title: 'Fast delivery',
-        aboutCard3Text: 'We ship your order within 1-3 business days, and shipping is free on purchases over 299 kr.',
-        backToProducts: '← Back to products',
-        prevProduct: 'Previous product',
-        nextProduct: 'Next product',
-        cart: 'Cart',
-        closeCart: 'Close cart',
-        openCart: 'Open cart',
-        freeShipping: '☕ Free shipping on orders over 299 kr',
-        subtotal: 'Subtotal',
-        shipping: 'Shipping',
-        total: 'Total',
-        checkout: 'To checkout',
-        footerTagline: 'Passionate about lovely cups of coffee and serious coffee filters for those who take coffee seriously',
-        footerShop: 'Shop',
-        footerCustom: 'Custom Design',
-        footerService: 'Customer service',
-        footerShipping: 'Shipping & delivery',
-        footerReturns: 'Returns and complaints',
-        footerTerms: 'Terms of purchase',
-        footerAddress: 'Helsingborg, Sweden',
-        footerCopyright: '© 2025 BrewCoff. All rights reserved. Brewed with care.',
-        footerPrivacy: 'Privacy policy',
-        footerTermsShort: 'Terms',
-        mug: 'Mug',
-        filter: 'Filter',
-        addShort: 'Add',
-        of: 'of',
-        cartEmpty: 'Your cart is empty.',
-        continueShopping: 'Continue shopping',
-        perPiece: ' / pc',
-        decreaseQty: 'Decrease quantity',
-        increaseQty: 'Increase quantity',
-        remove: 'Remove',
-        freeShippingLabel: 'Free shipping',
-        qualifyNote: 'You have qualified for free shipping!',
-        moreForFreePrefix: 'Add ',
-        moreForFreeSuffix: ' more for free shipping',
-        addedToCart: ' was added to the cart',
-        customMugAdded: 'Your custom mug was added to the cart',
-        cartNotReady: 'The cart is not ready yet - please try again.',
-        studioResetDone: 'The design has been reset.',
-        summaryTextPrefix: 'Personalized mug – printed text: "',
-        summaryImagePrefix: 'Personalized mug – custom image printed',
-        checkoutThanks: 'Thank you for your order!\n\nTotal: ',
-        checkoutDemo: '\n\n(This is a demo – no payment is made.)',
-        welcomePrefix: 'Welcome, ',
-        loggedOut: 'You have logged out',
-        mugColorAria: 'Mug color ',
-        printColorAria: 'Print color '
-    }
-};
-
-function t(key) {
-    const dict = I18N[currentLang] || I18N.sv;
-    if (dict[key] !== undefined) return dict[key];
-    if (I18N.sv[key] !== undefined) return I18N.sv[key];
-    return key;
-}
-
-// Produktens namn/beskrivning på aktiva språket
-function pName(p) { return currentLang === 'en' && p.nameEn ? p.nameEn : p.name; }
-function pDesc(p) { return currentLang === 'en' && p.descEn ? p.descEn : p.desc; }
-// Färgets etikett på aktiva språket
-function cLabel(c) { return currentLang === 'en' && c.labelEn ? c.labelEn : c.label; }
-
-// Byter språk, sparar valet och översätter sidan (statiskt + dynamiskt innehåll)
-function applyLanguage(lang) {
-    currentLang = (lang === 'en') ? 'en' : 'sv';
-    try { localStorage.setItem(LANG_KEY, currentLang); } catch (e) { /* localStorage tillgängligt ej */ }
-    document.documentElement.lang = currentLang;
-
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        el.textContent = t(el.getAttribute('data-i18n'));
-    });
-    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-        el.placeholder = t(el.getAttribute('data-i18n-ph'));
-    });
-    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
-        el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
-    });
-
-    // Menyns inloggningsetikett visar e-post när inloggad, annars "Logga in/Log in"
-    const loginLabelEl = document.querySelector('#loginItem .sidebar-item-label');
-    if (loginLabelEl) {
-        let user = null;
-        try { user = localStorage.getItem('brewcoff-user'); } catch (e) { /* inget sparat konto */ }
-        loginLabelEl.textContent = user ? user : t('login');
-    }
-
-    // Markera valt språk i undermenyn
-    document.querySelectorAll('#langMenu button[data-lang]').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === currentLang);
-    });
-
-    // Rita om dynamiska vyer på nya språket
-    if (typeof renderProducts === 'function') renderProducts(detailList);
-    const detailView = document.getElementById('productDetailView');
-    if (currentDetailId && detailView && detailView.style.display !== 'none') {
-        openProductDetail(currentDetailId);
-    }
-    if (typeof renderCart === 'function') renderCart();
-    if (typeof studioBuildMugSwatches === 'function') {
-        studioBuildMugSwatches();
-        studioBuildTextSwatches();
-    }
-}
 
 document.addEventListener("DOMContentLoaded", () => {
     renderProducts(products);
@@ -390,15 +94,15 @@ function renderProducts(items) {
         card.className = "product-card";
         // Gör så att man kommer till produktsidan när man trycker på kortet eller bilden
         card.innerHTML = `
-            <span class="product-badge">${p.category === 'motiv' ? t('mug') : t('filter')}</span>
+            <span class="product-badge">${p.category === 'motiv' ? 'Mugg' : 'Filter'}</span>
             <div class="product-img-wrapper" onclick="openProductDetail(${p.id})">
-                <img src="${p.image}" alt="${pName(p)}">
+                <img src="${p.image}" alt="${p.name}">
             </div>
-            <h3 class="product-title" onclick="openProductDetail(${p.id})">${pName(p)}</h3>
-            <p class="product-desc">${pDesc(p)}</p>
+            <h3 class="product-title" onclick="openProductDetail(${p.id})">${p.name}</h3>
+            <p class="product-desc">${p.desc}</p>
             <div class="product-bottom">
                 <span class="product-price">${p.price} kr</span>
-                <button class="add-cart-btn" onclick="addToCart(${p.id})">${t('addShort')}</button>
+                <button class="add-cart-btn" onclick="addToCart(${p.id})">Lägg till</button>
             </div>
         `;
         container.appendChild(card);
@@ -414,16 +118,16 @@ function openProductDetail(productId) {
     // Position "x av y" + dölj pilarna om det bara är en produkt i listan
     const idx = detailList.findIndex(p => p.id === productId);
     document.getElementById("detailPosition").innerText =
-        (idx >= 0 ? idx + 1 : "–") + " " + t('of') + " " + detailList.length;
+        (idx >= 0 ? idx + 1 : "–") + " av " + detailList.length;
     const showNav = detailList.length > 1;
     document.querySelectorAll(".detail-nav").forEach(b => b.style.display = showNav ? "flex" : "none");
 
     document.getElementById("detailImg").src = product.image;
-    document.getElementById("detailImg").alt = pName(product);
-    document.getElementById("detailBadge").innerText = product.category === 'motiv' ? t('mug') : t('filter');
-    document.getElementById("detailTitle").innerText = pName(product);
+    document.getElementById("detailImg").alt = product.name;
+    document.getElementById("detailBadge").innerText = product.category === 'motiv' ? 'Mugg' : 'Filter';
+    document.getElementById("detailTitle").innerText = product.name;
     document.getElementById("detailPrice").innerText = `${product.price} kr`;
-    document.getElementById("detailDesc").innerText = pDesc(product);
+    document.getElementById("detailDesc").innerText = product.desc;
 
     // Koppla "Lägg till"-knappen på produktsidan
     const addBtn = document.getElementById("detailAddToCartBtn");
@@ -473,10 +177,9 @@ function filterCategory(cat, btn) {
 }
 
 function searchProducts(query) {
-    const q = query.toLowerCase();
     const filtered = products.filter(p =>
-        pName(p).toLowerCase().includes(q) ||
-        pDesc(p).toLowerCase().includes(q)
+        p.name.toLowerCase().includes(query.toLowerCase()) ||
+        p.desc.toLowerCase().includes(query.toLowerCase())
     );
     renderProducts(filtered);
 }
@@ -529,19 +232,19 @@ fileName: ''
 const STUDIO_MUG_IMG = new Image();
 
 const STUDIO_MUG_COLORS = [
-{ id: 'white',  label: 'Vit',         labelEn: 'White',       hex: '#ffffff', tint: null },
-{ id: 'brown',  label: 'Kaffebrun',   labelEn: 'Coffee brown', hex: '#7c5433', tint: 'rgba(124, 84, 51, 0.60)' },
-{ id: 'beige',  label: 'Beige',       labelEn: 'Beige',       hex: '#d9c1a3', tint: 'rgba(217, 193, 163, 0.55)' },
-{ id: 'gray',   label: 'Grå',         labelEn: 'Grey',        hex: '#a8adb3', tint: 'rgba(168, 173, 179, 0.55)' },
-{ id: 'blue',   label: 'Blå',         labelEn: 'Blue',        hex: '#7d9bb8', tint: 'rgba(125, 155, 184, 0.55)' },
-{ id: 'red',    label: 'Terrakotta',  labelEn: 'Terracotta',  hex: '#b06a5e', tint: 'rgba(176, 106, 94, 0.50)' }
+{ id: 'white',  label: 'Vit',         hex: '#ffffff', tint: null },
+{ id: 'brown',  label: 'Kaffebrun',   hex: '#7c5433', tint: 'rgba(124, 84, 51, 0.60)' },
+{ id: 'beige',  label: 'Beige',       hex: '#d9c1a3', tint: 'rgba(217, 193, 163, 0.55)' },
+{ id: 'gray',   label: 'Grå',         hex: '#a8adb3', tint: 'rgba(168, 173, 179, 0.55)' },
+{ id: 'blue',   label: 'Blå',         hex: '#7d9bb8', tint: 'rgba(125, 155, 184, 0.55)' },
+{ id: 'red',    label: 'Terrakotta',  hex: '#b06a5e', tint: 'rgba(176, 106, 94, 0.50)' }
 ];
 
 const STUDIO_TEXT_COLORS = [
-{ id: 'black', label: 'Svart',    labelEn: 'Black',      hex: '#181c19' },
-{ id: 'white', label: 'Vit',      labelEn: 'White',      hex: '#ffffff' },
-{ id: 'brown', label: 'Mörkbrun', labelEn: 'Dark brown', hex: '#3b2720' },
-{ id: 'amber', label: 'Amber',    labelEn: 'Amber',      hex: '#d97706' }
+{ id: 'black', label: 'Svart',    hex: '#181c19' },
+{ id: 'white', label: 'Vit',      hex: '#ffffff' },
+{ id: 'brown', label: 'Mörkbrun', hex: '#3b2720' },
+{ id: 'amber', label: 'Amber',    hex: '#d97706' }
 ];
 
 const STUDIO_FONTS = {
@@ -793,15 +496,14 @@ studioRender();
 function studioBuildMugSwatches() {
 const wrap = document.getElementById('studioMugSwatches');
 if (!wrap) return;
-wrap.innerHTML = '';
 STUDIO_MUG_COLORS.forEach(color => {
 const btn = document.createElement('button');
 btn.type = 'button';
 btn.className = 'studio-swatch' + (color.id === studioState.mugColorId ? ' active' : '');
 btn.style.background = color.hex;
 btn.dataset.colorId = color.id;
-btn.title = cLabel(color);
-btn.setAttribute('aria-label', t('mugColorAria') + cLabel(color));
+btn.title = color.label;
+btn.setAttribute('aria-label', 'Muggfärg ' + color.label);
 btn.onclick = () => studioSelectMugColor(color.id);
 wrap.appendChild(btn);
 });
@@ -810,15 +512,14 @@ wrap.appendChild(btn);
 function studioBuildTextSwatches() {
 const wrap = document.getElementById('studioTextSwatches');
 if (!wrap) return;
-wrap.innerHTML = '';
 STUDIO_TEXT_COLORS.forEach(color => {
 const btn = document.createElement('button');
 btn.type = 'button';
 btn.className = 'studio-swatch' + (color.id === 'black' ? ' active' : '');
 btn.style.background = color.hex;
 btn.dataset.colorId = color.id;
-btn.title = cLabel(color);
-btn.setAttribute('aria-label', t('printColorAria') + cLabel(color));
+btn.title = color.label;
+btn.setAttribute('aria-label', 'Tryckfärg ' + color.label);
 btn.onclick = () => studioSelectTextColor(color.id, color.hex);
 wrap.appendChild(btn);
 });
@@ -855,7 +556,7 @@ studioSyncInputs();
 studioSetMode('text');
 studioSelectMugColor('white');
 studioSelectTextColor('black', '#181c19');
-studioStatus(t('studioResetDone'));
+studioStatus('Designen är återställd.');
 }
 
 /* ------------------------------------------------------------
@@ -864,9 +565,9 @@ studioStatus(t('studioResetDone'));
 
 function studioDesignSummary() {
 if (studioState.mode === 'text') {
-return t('summaryTextPrefix') + (studioState.text || '').trim() + '"';
+return 'Personlig mugg – tryckt text: "' + (studioState.text || '').trim() + '"';
 }
-return t('summaryImagePrefix') + (studioState.fileName ? ' (' + studioState.fileName + ')' : '');
+return 'Personlig mugg – tryckt egen bild' + (studioState.fileName ? ' (' + studioState.fileName + ')' : '');
 }
 
 function studioThumbnailDataURL(size) {
@@ -945,10 +646,10 @@ if (typeof cart !== 'undefined' && Array.isArray(cart)) {
 }
 
 if (added) {
-if (typeof showToast === 'function') showToast(t('customMugAdded'));
-else studioStatus('✓ ' + t('customMugAdded'));
+if (typeof showToast === 'function') showToast('Din custom mugg lades i varukorgen');
+else studioStatus('✓ Din mugg ligger i varukorgen!');
 } else {
-studioStatus(t('cartNotReady'), true);
+studioStatus('Varukorgen är inte klar ännu - försök igen.', true);
 }
 }
 function studioStatus(msg, isError) {
@@ -966,9 +667,9 @@ studioStatusTimer = setTimeout(() => {
 }
 
 /* ===== Footer (Anton Blad) – klickar rätt filterpill ===== */
-// Tar kategori-id (all/motiv/filter) så att det fungerar oavsett språk
-function goToCategory(cat) {
-    const pill = document.querySelector('.filter-pill[data-cat="' + cat + '"]');
+function goToCategory(pillText) {
+    const pill = [...document.querySelectorAll('.filter-pill')]
+      .find(p => p.textContent.trim() === pillText);
     if (pill) pill.click();
 }
 
@@ -1045,7 +746,7 @@ function addToCart(productId) {
     }
     saveCartToStorage();
     renderCart();
-    showToast(pName(product) + t('addedToCart'));
+    showToast(product.name + " lades i varukorgen");
 }
 
 function changeQty(productId, delta) {
@@ -1083,8 +784,7 @@ function shippingCost() {
 }
 
 function formatKr(amount) {
-    const locale = currentLang === 'en' ? 'en-GB' : 'sv-SE';
-    return amount.toLocaleString(locale) + ' kr';
+    return amount.toLocaleString('sv-SE') + ' kr';
 }
 
 // ===== Rendering =====
@@ -1106,8 +806,8 @@ function renderCart() {
         itemsEl.innerHTML = `
             <div class="cart-empty">
                 <div class="cart-empty-icon">☕</div>
-                <p>${t('cartEmpty')}</p>
-                <button class="cart-continue-btn" onclick="toggleCart()">${t('continueShopping')}</button>
+                <p>Din varukorg är tom.</p>
+                <button class="cart-continue-btn" onclick="toggleCart()">Fortsätt handla</button>
             </div>`;
         footerEl.style.display = 'none';
         return;
@@ -1115,33 +815,27 @@ function renderCart() {
 
     footerEl.style.display = 'block';
 
-    itemsEl.innerHTML = cart.map(item => {
-        // Katalogprodukter översätts vid rendering (namn/beskrivning sparas på svenska)
-        const p = products.find(x => x.id === item.id);
-        const name = p ? pName(p) : item.name;
-        const desc = p ? pDesc(p) : item.desc;
-        return `
+    itemsEl.innerHTML = cart.map(item => `
         <div class="cart-item">
             <div class="cart-item-img">
-                <img src="${item.image}" alt="${name}">
+                <img src="${item.image}" alt="${item.name}">
             </div>
             <div class="cart-item-info">
-                <h4 class="cart-item-name">${name}</h4>
-                ${desc ? `<p class="cart-item-desc">${desc}</p>` : ''}
-                <p class="cart-item-price">${formatKr(item.price)}${t('perPiece')}</p>
+                <h4 class="cart-item-name">${item.name}</h4>
+                ${item.desc ? `<p class="cart-item-desc">${item.desc}</p>` : ''}
+                <p class="cart-item-price">${formatKr(item.price)} / st</p>
                 <div class="cart-item-actions">
                     <div class="qty-stepper">
-                        <button onclick="changeQty(${item.id}, -1)" aria-label="${t('decreaseQty')}">&minus;</button>
+                        <button onclick="changeQty(${item.id}, -1)" aria-label="Minska antal">&minus;</button>
                         <span class="qty-value">${item.qty}</span>
-                        <button onclick="changeQty(${item.id}, 1)" aria-label="${t('increaseQty')}">+</button>
+                        <button onclick="changeQty(${item.id}, 1)" aria-label="Öka antal">+</button>
                     </div>
-                    <button class="cart-remove-btn" onclick="removeFromCart(${item.id})">${t('remove')}</button>
+                    <button class="cart-remove-btn" onclick="removeFromCart(${item.id})">Ta bort</button>
                 </div>
             </div>
             <span class="cart-item-line-total">${formatKr(item.price * item.qty)}</span>
         </div>
-    `;
-    }).join('');
+    `).join('');
 
     // Totaler
     const subtotal = cartSubtotal();
@@ -1149,7 +843,7 @@ function renderCart() {
     document.getElementById('cartSubtotal').textContent = formatKr(subtotal);
 
     const shippingEl = document.getElementById('cartShipping');
-    shippingEl.textContent = shipping === 0 ? t('freeShippingLabel') : formatKr(shipping);
+    shippingEl.textContent = shipping === 0 ? 'Fri frakt' : formatKr(shipping);
     shippingEl.classList.toggle('free', shipping === 0);
 
     document.getElementById('cartTotal').textContent = formatKr(subtotal + shipping);
@@ -1158,10 +852,10 @@ function renderCart() {
     const noteEl = document.getElementById('shippingNote');
     const barEl = document.getElementById('shippingProgress');
     if (subtotal >= FREE_SHIPPING_LIMIT) {
-        noteEl.textContent = t('qualifyNote');
+        noteEl.textContent = 'Du har kvalificerat dig för fri frakt!';
         barEl.style.width = '100%';
     } else {
-        noteEl.textContent = t('moreForFreePrefix') + formatKr(FREE_SHIPPING_LIMIT - subtotal) + t('moreForFreeSuffix');
+        noteEl.textContent = 'Köp för ' + formatKr(FREE_SHIPPING_LIMIT - subtotal) + ' till för fri frakt';
         barEl.style.width = Math.min(100, (subtotal / FREE_SHIPPING_LIMIT) * 100) + '%';
     }
 }
@@ -1189,7 +883,8 @@ document.addEventListener('keydown', (e) => {
 function checkout() {
     if (cart.length === 0) return;
     const total = cartSubtotal() + shippingCost();
-    alert(t('checkoutThanks') + formatKr(total) + t('checkoutDemo'));
+    alert('Tack för din beställning!\n\nTotalt: ' + formatKr(total) +
+        '\n\n(Detta är en demo – ingen betalning görs.)');
     cart.length = 0;
     saveCartToStorage();
     renderCart();
@@ -1223,17 +918,11 @@ renderCart();
     const closeBtn = document.getElementById('menuClose');
     if (!menuBtn || !overlay || !sidebar || !closeBtn) return;
 
-    const langMenu = document.getElementById('langMenu');
-    const langToggle = document.getElementById('langToggle');
-
     function setMenu(open) {
         overlay.classList.toggle('open', open);
         sidebar.classList.toggle('open', open);
         document.body.classList.toggle('menu-open', open);
         menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        // Stäng språkundermenyn när menyn stängs
-        if (langMenu) langMenu.classList.toggle('open', false);
-        if (langToggle) langToggle.setAttribute('aria-expanded', 'false');
     }
 
     menuBtn.addEventListener('click', () => {
@@ -1254,21 +943,6 @@ renderCart();
         });
     }
 
-    // Språk – fälla upp undermenyn och spara valet i localStorage
-    if (langToggle && langMenu) {
-        langToggle.addEventListener('click', () => {
-            const open = !langMenu.classList.contains('open');
-            langMenu.classList.toggle('open', open);
-            langToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-        langMenu.querySelectorAll('button[data-lang]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                applyLanguage(btn.dataset.lang);
-                setMenu(false);
-            });
-        });
-    }
-
     // "Kontakta oss" & "Hjälp & support" – skrolla till footern och stäng menyn
     document.querySelectorAll('.sidebar-item[data-goto]').forEach((item) => {
         item.addEventListener('click', () => {
@@ -1281,40 +955,166 @@ renderCart();
         });
     });
 
-    // ===== Inloggning (Rasmus) =====
-    // Demo-inloggning (ingen backend): giltig e-post + lösenord = "inloggad".
-    // Kontot sparas i localStorage; klicka på posten igen för att logga ut.
+    // ===== Inloggning & kontovyn (Rasmus) =====
+    // Demo-inloggning (ingen backend): en mejl reserveras som konto när den
+    // används första gången (sparas i localStorage). Samma mejl kräver samma
+    // lösenord; kontonamnet sparas/uppdateras vid inloggning. Admin kräver
+    // bekräftelsekoden 0005 när kontot skapas.
+    const ACCOUNTS_KEY = 'brewcoff-accounts';
+    const USER_KEY = 'brewcoff-user';
+    const NAME_KEY = 'brewcoff-user-name';
+    const TYPE_KEY = 'brewcoff-user-type';
+    const ORDERS_PREFIX = 'brewcoff-orders:';
+    const ADMIN_CODE = '0005';
+    const TYPE_LABELS = { kund: 'Vanlig kund', foretag: 'Företagkund', admin: 'Admin' };
+
     const loginItem = document.getElementById('loginItem');
     const loginOverlay = document.getElementById('loginOverlay');
     const loginForm = document.getElementById('loginForm');
     const loginEmail = document.getElementById('loginEmail');
     const loginPassword = document.getElementById('loginPassword');
+    const loginName = document.getElementById('loginName');
     const loginError = document.getElementById('loginError');
     const loginClose = document.getElementById('loginClose');
+    const loginAdminCode = document.getElementById('loginAdminCode');
     const loginLabel = loginItem ? loginItem.querySelector('.sidebar-item-label') : null;
     const logoutItem = document.getElementById('logoutItem');
+    const accountOverlay = document.getElementById('accountOverlay');
+    const accountClose = document.getElementById('accountClose');
+    const accountName = document.getElementById('accountName');
+    const accountEmail = document.getElementById('accountEmail');
+    const accountType = document.getElementById('accountType');
+    const accountPurchases = document.getElementById('accountPurchases');
     let setLogin = null;
+    let setAccount = null;
+    let nameEditing = false;
+    let stopNameEdit = null;
+
+    function escapeHtml(text) {
+        return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Kontoregistrat: reserverade mejl -> { password, name, type }
+    function loadAccounts() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '{}');
+            return (saved && typeof saved === 'object' && !Array.isArray(saved)) ? saved : {};
+        } catch (err) { return {}; }
+    }
+
+    function saveAccounts(accounts) {
+        try { localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts)); } catch (err) { /* lagret fullt – ignorera */ }
+    }
+
+    // ===== Köphistorik (Rasmus) =====
+    // Vrapar kassan så att köp sparas i köphistoriken för inloggade användare.
+    // Antons checkout() ändras inte – den anropas som den är.
+    const originalCheckout = window.checkout;
+    if (typeof originalCheckout === 'function' && typeof cart !== 'undefined' && Array.isArray(cart)) {
+        window.checkout = function () {
+            const user = localStorage.getItem(USER_KEY);
+            const items = cart.length > 0
+                ? cart.map((item) => ({ name: item.name, price: item.price, qty: item.qty }))
+                : [];
+            const total = typeof cartSubtotal === 'function' && typeof shippingCost === 'function'
+                ? cartSubtotal() + shippingCost()
+                : 0;
+            originalCheckout();
+            if (!user || items.length === 0) return;
+            const key = ORDERS_PREFIX + user;
+            let orders = [];
+            try { orders = JSON.parse(localStorage.getItem(key) || '[]'); } catch (err) { orders = []; }
+            if (!Array.isArray(orders)) orders = [];
+            orders.push({ date: new Date().toISOString(), items: items, total: total });
+            try { localStorage.setItem(key, JSON.stringify(orders)); } catch (err) { /* lagret fullt – ignorera */ }
+        };
+    }
 
     if (loginItem && loginOverlay && loginForm && loginEmail && loginPassword) {
-        const USER_KEY = 'brewcoff-user';
-
         setLogin = (open) => {
             loginOverlay.classList.toggle('open', open);
             document.body.classList.toggle('login-open', open);
         };
 
+        setAccount = (open) => {
+            if (accountOverlay) accountOverlay.classList.toggle('open', open);
+            document.body.classList.toggle('login-open', open);
+        };
+
         function refreshLoginLabel() {
             const user = localStorage.getItem(USER_KEY);
-            if (loginLabel) loginLabel.textContent = user ? user : t('login');
+            if (loginLabel) {
+                // Visa kontonamnet på knappen (e-post som reserv om inget namn finns)
+                const name = user ? (localStorage.getItem(NAME_KEY) || '') : '';
+                loginLabel.textContent = name || user || 'Logga in';
+            }
             if (logoutItem) logoutItem.classList.toggle('visible', Boolean(user));
         }
 
+        // Kontotyp: markera vald knapp + visa/dölj fältet för adminkod
+        const typeInputs = loginForm.querySelectorAll('input[name="loginType"]');
+        function syncTypeUI() {
+            typeInputs.forEach((input) => {
+                const label = input.closest('.login-type');
+                if (label) label.classList.toggle('selected', input.checked);
+            });
+            if (loginAdminCode) {
+                const adminChecked = loginForm.querySelector('input[name="loginType"][value="admin"]');
+                loginAdminCode.hidden = !adminChecked || !adminChecked.checked;
+            }
+        }
+        typeInputs.forEach((input) => input.addEventListener('change', syncTypeUI));
+
+        function renderAccountPurchases(user) {
+            if (!accountPurchases) return;
+            let orders = [];
+            try { orders = JSON.parse(localStorage.getItem(ORDERS_PREFIX + user) || '[]'); } catch (err) { orders = []; }
+            if (!Array.isArray(orders) || orders.length === 0) {
+                accountPurchases.innerHTML = '<p class="account-empty">Inga köp ännu.</p>';
+                return;
+            }
+            const formatPrice = typeof formatKr === 'function' ? formatKr : (n) => n + ' kr';
+            accountPurchases.innerHTML = orders.map((order) => {
+                const date = new Date(order.date).toLocaleDateString('sv-SE', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                });
+                const items = (order.items || []).map((item) =>
+                    item.qty + '× ' + escapeHtml(item.name) + ' – ' + formatPrice(item.price * item.qty)
+                ).join('<br>');
+                return '<div class="account-order">' +
+                    '<p class="account-order-date">' + escapeHtml(date) + '</p>' +
+                    '<p class="account-order-items">' + items + '</p>' +
+                    '<p class="account-order-total">Totalt: ' + formatPrice(order.total) + '</p>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function openAccountView(user) {
+            if (stopNameEdit) stopNameEdit();
+            if (accountName) accountName.textContent = localStorage.getItem(NAME_KEY) || '–';
+            if (accountEmail) accountEmail.textContent = user;
+            if (accountType) {
+                const type = localStorage.getItem(TYPE_KEY) || 'kund';
+                accountType.textContent = TYPE_LABELS[type] || TYPE_LABELS.kund;
+            }
+            renderAccountPurchases(user);
+            setAccount(true);
+        }
+
         loginItem.addEventListener('click', () => {
-            // Inloggade ser sitt konto här – ingen åtgärd (loggning sker via "Logga ut")
-            if (localStorage.getItem(USER_KEY)) return;
+            const user = localStorage.getItem(USER_KEY);
+            if (user) {
+                // Inloggad -> öppna kontovynen
+                setMenu(false);
+                openAccountView(user);
+                return;
+            }
             setMenu(false);
+            if (loginName) loginName.value = localStorage.getItem(NAME_KEY) || '';
             loginEmail.value = '';
             loginPassword.value = '';
+            if (loginAdminCode) loginAdminCode.value = '';
+            syncTypeUI();
             if (loginError) loginError.hidden = true;
             setLogin(true);
             loginEmail.focus();
@@ -1322,15 +1122,54 @@ renderCart();
 
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = loginEmail.value.trim();
-            if (!email.includes('@') || loginPassword.value.length === 0) {
-                if (loginError) loginError.hidden = false;
+            const email = loginEmail.value.trim().toLowerCase();
+            const password = loginPassword.value;
+            const name = loginName ? loginName.value.trim() : '';
+            // E-post och lösenord är obligatoriska
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || password.length === 0) {
+                if (loginError) {
+                    loginError.textContent = 'Ange en giltig e-post och ett lösenord';
+                    loginError.hidden = false;
+                }
                 return;
             }
+            const accounts = loadAccounts();
+            if (accounts[email]) {
+                // Reserverad mejl: kräver samma lösenord, kontotypen behålls
+                // och kontonamnet sparas/uppdateras
+                if (password !== accounts[email].password) {
+                    if (loginError) {
+                        loginError.textContent = 'Fel lösenord för denna e-post';
+                        loginError.hidden = false;
+                    }
+                    return;
+                }
+                if (name) accounts[email].name = name;
+            } else {
+                // Ny mejl -> reserveras som ett nytt konto
+                const typeInput = loginForm.querySelector('input[name="loginType"]:checked');
+                const accountTypeValue = typeInput ? typeInput.value : 'kund';
+                if (accountTypeValue === 'admin') {
+                    const code = loginAdminCode ? loginAdminCode.value.trim() : '';
+                    if (code !== ADMIN_CODE) {
+                        if (loginError) {
+                            loginError.textContent = 'Fel adminkod';
+                            loginError.hidden = false;
+                        }
+                        return;
+                    }
+                }
+                accounts[email] = { password: password, name: name, type: accountTypeValue };
+            }
+            saveAccounts(accounts);
+            const account = accounts[email];
             localStorage.setItem(USER_KEY, email);
+            if (account.name) localStorage.setItem(NAME_KEY, account.name);
+            else localStorage.removeItem(NAME_KEY);
+            localStorage.setItem(TYPE_KEY, account.type);
             refreshLoginLabel();
             setLogin(false);
-            if (typeof showToast === 'function') showToast(t('welcomePrefix') + email);
+            if (typeof showToast === 'function') showToast('Välkommen, ' + (account.name || email));
         });
 
         if (loginClose) loginClose.addEventListener('click', () => setLogin(false));
@@ -1338,25 +1177,87 @@ renderCart();
             if (e.target === loginOverlay) setLogin(false);
         });
 
+        if (accountClose) accountClose.addEventListener('click', () => setAccount(false));
+        if (accountOverlay) {
+            accountOverlay.addEventListener('click', (e) => {
+                if (e.target === accountOverlay) setAccount(false);
+            });
+        }
+
+        // Redigera kontonamn direkt i kontovynen (Rasmus)
+        const accountNameInput = document.getElementById('accountNameInput');
+        const accountNameEdit = document.getElementById('accountNameEdit');
+        const accountNameSave = document.getElementById('accountNameSave');
+
+        stopNameEdit = () => {
+            nameEditing = false;
+            if (accountNameInput) accountNameInput.hidden = true;
+            if (accountName) accountName.hidden = false;
+            if (accountNameEdit) accountNameEdit.hidden = false;
+            if (accountNameSave) accountNameSave.hidden = true;
+        };
+
+        function startNameEdit() {
+            if (!accountNameInput || !localStorage.getItem(USER_KEY)) return;
+            nameEditing = true;
+            accountNameInput.value = localStorage.getItem(NAME_KEY) || '';
+            accountNameInput.hidden = false;
+            if (accountName) accountName.hidden = true;
+            if (accountNameEdit) accountNameEdit.hidden = true;
+            if (accountNameSave) accountNameSave.hidden = false;
+            accountNameInput.focus();
+            accountNameInput.select();
+        }
+
+        function saveNameEdit() {
+            const user = localStorage.getItem(USER_KEY);
+            if (!user) { stopNameEdit(); return; }
+            const name = accountNameInput ? accountNameInput.value.trim() : '';
+            const accounts = loadAccounts();
+            if (accounts[user]) {
+                accounts[user].name = name;
+                saveAccounts(accounts);
+            }
+            if (name) localStorage.setItem(NAME_KEY, name);
+            else localStorage.removeItem(NAME_KEY);
+            stopNameEdit();
+            if (accountName) accountName.textContent = name || '–';
+            refreshLoginLabel();
+            if (typeof showToast === 'function') showToast(name ? 'Kontonamnet uppdaterades' : 'Kontonamnet togs bort');
+        }
+
+        if (accountNameEdit) accountNameEdit.addEventListener('click', startNameEdit);
+        if (accountNameSave) accountNameSave.addEventListener('click', saveNameEdit);
+        if (accountNameInput) {
+            accountNameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveNameEdit();
+                }
+            });
+        }
+
         // "Logga ut"-knappen i botten av sidmenyn (synlig bara när inloggad)
         if (logoutItem) {
             logoutItem.addEventListener('click', () => {
                 localStorage.removeItem(USER_KEY);
+                localStorage.removeItem(NAME_KEY);
+                localStorage.removeItem(TYPE_KEY);
                 refreshLoginLabel();
-                if (typeof showToast === 'function') showToast(t('loggedOut'));
+                if (typeof showToast === 'function') showToast('Du har loggat ut');
             });
         }
 
+        syncTypeUI();
         refreshLoginLabel();
     }
 
-    // Escape stänger först inloggningspopppen, sedan sidmenyn
+    // Escape stänger först redigeringen, sedan kontovynen, sedan inloggningspopppen, sedan sidmenyn
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        if (loginOverlay && loginOverlay.classList.contains('open') && setLogin) setLogin(false);
+        if (nameEditing && stopNameEdit) { stopNameEdit(); return; }
+        if (accountOverlay && accountOverlay.classList.contains('open') && setAccount) setAccount(false);
+        else if (loginOverlay && loginOverlay.classList.contains('open') && setLogin) setLogin(false);
         else setMenu(false);
     });
-
-    // Tillämpa sparat språk (eller standardsvenska) vid sidans start
-    applyLanguage(currentLang);
 })();

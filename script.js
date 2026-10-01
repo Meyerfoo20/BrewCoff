@@ -932,8 +932,102 @@ renderCart();
     closeBtn.addEventListener('click', () => setMenu(false));
     overlay.addEventListener('click', () => setMenu(false));
 
-    // Stäng sidmenyn med Escape
+    // Ljust/mörkt läge – byt tema och spara valet i localStorage
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const root = document.documentElement;
+            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('brewcoff-theme', next);
+        });
+    }
+
+    // "Kontakta oss" & "Hjälp & support" – skrolla till footern och stäng menyn
+    document.querySelectorAll('.sidebar-item[data-goto]').forEach((item) => {
+        item.addEventListener('click', () => {
+            setMenu(false);
+            const target =
+                item.dataset.goto === 'footer'
+                    ? document.querySelector('.site-footer')
+                    : document.getElementById(item.dataset.goto);
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // ===== Inloggning (Rasmus) =====
+    // Demo-inloggning (ingen backend): giltig e-post + lösenord = "inloggad".
+    // Kontot sparas i localStorage; klicka på posten igen för att logga ut.
+    const loginItem = document.getElementById('loginItem');
+    const loginOverlay = document.getElementById('loginOverlay');
+    const loginForm = document.getElementById('loginForm');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginError = document.getElementById('loginError');
+    const loginClose = document.getElementById('loginClose');
+    const loginLabel = loginItem ? loginItem.querySelector('.sidebar-item-label') : null;
+    const logoutItem = document.getElementById('logoutItem');
+    let setLogin = null;
+
+    if (loginItem && loginOverlay && loginForm && loginEmail && loginPassword) {
+        const USER_KEY = 'brewcoff-user';
+
+        setLogin = (open) => {
+            loginOverlay.classList.toggle('open', open);
+            document.body.classList.toggle('login-open', open);
+        };
+
+        function refreshLoginLabel() {
+            const user = localStorage.getItem(USER_KEY);
+            if (loginLabel) loginLabel.textContent = user ? user : 'Logga in';
+            if (logoutItem) logoutItem.classList.toggle('visible', Boolean(user));
+        }
+
+        loginItem.addEventListener('click', () => {
+            // Inloggade ser sitt konto här – ingen åtgärd (loggning sker via "Logga ut")
+            if (localStorage.getItem(USER_KEY)) return;
+            setMenu(false);
+            loginEmail.value = '';
+            loginPassword.value = '';
+            if (loginError) loginError.hidden = true;
+            setLogin(true);
+            loginEmail.focus();
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = loginEmail.value.trim();
+            if (!email.includes('@') || loginPassword.value.length === 0) {
+                if (loginError) loginError.hidden = false;
+                return;
+            }
+            localStorage.setItem(USER_KEY, email);
+            refreshLoginLabel();
+            setLogin(false);
+            if (typeof showToast === 'function') showToast('Välkommen, ' + email);
+        });
+
+        if (loginClose) loginClose.addEventListener('click', () => setLogin(false));
+        loginOverlay.addEventListener('click', (e) => {
+            if (e.target === loginOverlay) setLogin(false);
+        });
+
+        // "Logga ut"-knappen i botten av sidmenyn (synlig bara när inloggad)
+        if (logoutItem) {
+            logoutItem.addEventListener('click', () => {
+                localStorage.removeItem(USER_KEY);
+                refreshLoginLabel();
+                if (typeof showToast === 'function') showToast('Du har loggat ut');
+            });
+        }
+
+        refreshLoginLabel();
+    }
+
+    // Escape stänger först inloggningspopppen, sedan sidmenyn
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') setMenu(false);
+        if (e.key !== 'Escape') return;
+        if (loginOverlay && loginOverlay.classList.contains('open') && setLogin) setLogin(false);
+        else setMenu(false);
     });
 })();

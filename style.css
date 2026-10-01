@@ -1649,3 +1649,203 @@ body.menu-open {
     flex-shrink: 0;
     pointer-events: none;
 }
+
+/* "Logga ut" – visas i botten av sidmenyn när man är inloggad */
+.sidebar-logout {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition-smooth);
+}
+
+.sidebar-logout.visible {
+    display: flex;
+}
+
+.sidebar-logout:hover {
+    background: var(--accent-light);
+    border-color: var(--accent-main);
+    color: var(--accent-main);
+}
+
+.sidebar-logout svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+/* Inloggningspopup (Rasmus): modalruta ovanför allt (z-index 1200) */
+.login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(24, 28, 25, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+    z-index: 1200; /* ovanför sidmenyn (1101) */
+}
+
+.login-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.25s ease;
+}
+
+.login-dialog {
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-elevated);
+    padding: 28px;
+    transform: translateY(12px) scale(0.97);
+    transition: transform 0.25s ease;
+}
+
+.login-overlay.open .login-dialog {
+    transform: translateY(0) scale(1);
+}
+
+body.login-open {
+    overflow: hidden;
+}
+
+.login-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.login-header h2 {
+    font-size: 1.4rem;
+    color: var(--text-main);
+}
+
+.login-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+    flex-shrink: 0;
+}
+
+.login-close:hover {
+    background: var(--accent-light);
+    border-color: var(--accent-main);
+}
+
+.login-close svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--text-main);
+    stroke-width: 2;
+    stroke-linecap: round;
+    pointer-events: none; /* ikonen ska inte blockera klick på knappen */
+}
+
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#loginForm label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+#loginForm input {
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-main);
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+#loginForm input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+#loginForm input:focus {
+    border-color: var(--accent-main);
+    background: var(--bg-card);
+}
+
+.login-error {
+    margin: 0;
+    color: #b23c2e;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+#loginForm .btn-primary {
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* ===== Mörkt läge (Rasmus) =====
+   Aktiveras med data-theme="dark" på <html> (val sparas i localStorage) */
+[data-theme="dark"] {
+    --bg-main: #171310;
+    --bg-alt: #221b15;
+    --bg-card: #1f1813;
+    --bg-glass: rgba(23, 19, 16, 0.85);
+    --text-main: #f0e9df;
+    --text-muted: #a89e92;
+    --border-color: #3a2f26;
+    --shadow-elevated: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+    --btn-text: #1a140f;
+    --accent-main: #c98a4b;
+    --accent-hover: #b57a3e;
+    --accent-light: #33291f;
+}
+
+/* Om oss: ikonerna sitter på en orange cirkel, så de behöver mörkare
+   streck i mörkt läge (annars blir caramelfärgen osynlig mot orangea) */
+[data-theme="dark"] .about-icon svg {
+    stroke: #241a12;
+}
+
+/* Inloggning: felmeddelandet ska vara lättläst även på mörk botten */
+[data-theme="dark"] .login-error {
+    color: #e0846d;
+}

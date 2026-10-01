@@ -21,7 +21,7 @@
 </head>
 <body>
 
-    <div class="top-bar">
+    <div class="top-bar" data-i18n="topbar">
         Snabb leverans 1-3 vardagar
     </div>
 
@@ -34,11 +34,11 @@
             </button>
             <div class="navbar-right">
                 <div class="navbar-links">
-                    <button class="navbar-link" onclick="scrollToSection('produkter')">Produkter</button>
-                    <button class="navbar-link" onclick="scrollToSection('studio')">Custom mugg</button>
-                    <button class="navbar-link" onclick="scrollToSection('om-oss')">Om oss</button>
+                    <button class="navbar-link" data-i18n="navProducts" onclick="scrollToSection('produkter')">Produkter</button>
+                    <button class="navbar-link" data-i18n="navCustom" onclick="scrollToSection('studio')">Custom mugg</button>
+                    <button class="navbar-link" data-i18n="navAbout" onclick="scrollToSection('om-oss')">Om oss</button>
                 </div>
-                <button class="menu-btn" id="menuBtn" type="button" aria-label="Öppna meny" aria-expanded="false" aria-controls="menuSidebar">
+                <button class="menu-btn" id="menuBtn" type="button" aria-label="Öppna meny" data-i18n-aria="openMenu" aria-expanded="false" aria-controls="menuSidebar">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 </button>
             </div>
@@ -49,8 +49,8 @@
     <div class="sidebar-overlay" id="menuOverlay"></div>
     <aside class="sidebar" id="menuSidebar" aria-label="Meny">
         <div class="sidebar-header">
-            <h2>Meny</h2>
-            <button class="sidebar-close" id="menuClose" type="button" aria-label="Stäng meny">
+            <h2 data-i18n="menuTitle">Meny</h2>
+            <button class="sidebar-close" id="menuClose" type="button" aria-label="Stäng meny" data-i18n-aria="closeMenu">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
@@ -58,37 +58,41 @@
             <li>
                 <button class="sidebar-item" type="button" id="loginItem">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    <span class="sidebar-item-label">Logga in</span>
+                    <span class="sidebar-item-label" data-i18n="login">Logga in</span>
                 </button>
             </li>
             <li>
                 <button class="sidebar-item" type="button" id="themeToggle">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                    Ljust/mörkt läge
+                    <span data-i18n="theme">Ljust/mörkt läge</span>
                 </button>
             </li>
-            <li>
-                <button class="sidebar-item" type="button">
+            <li class="lang-item">
+                <button class="sidebar-item" type="button" id="langToggle" aria-expanded="false" aria-controls="langMenu">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    Språk
+                    <span data-i18n="language">Språk</span>
                 </button>
+                <ul class="lang-submenu" id="langMenu">
+                    <li><button type="button" data-lang="sv">Svenska</button></li>
+                    <li><button type="button" data-lang="en">English</button></li>
+                </ul>
             </li>
             <li>
                 <button class="sidebar-item" type="button" data-goto="footer">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    Kontakta oss
+                    <span data-i18n="contact">Kontakta oss</span>
                 </button>
             </li>
             <li>
                 <button class="sidebar-item" type="button" data-goto="footer">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
-                    Hjälp &amp; support
+                    <span data-i18n="help">Hjälp &amp; support</span>
                 </button>
             </li>
         </ul>
         <button class="sidebar-logout" id="logoutItem" type="button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Logga ut
+            <span data-i18n="logout">Logga ut</span>
         </button>
     </aside>
 
@@ -96,18 +100,18 @@
     <div class="login-overlay" id="loginOverlay">
         <div class="login-dialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
             <div class="login-header">
-                <h2 id="loginTitle">Logga in</h2>
-                <button class="login-close" id="loginClose" type="button" aria-label="Stäng inloggning">
+                <h2 id="loginTitle" data-i18n="login">Logga in</h2>
+                <button class="login-close" id="loginClose" type="button" aria-label="Stäng inloggning" data-i18n-aria="closeLogin">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
             <form id="loginForm" novalidate>
-                <label for="loginEmail">E-post</label>
-                <input type="email" id="loginEmail" autocomplete="email" placeholder="din@epost.se">
-                <label for="loginPassword">Lösenord</label>
+                <label for="loginEmail" data-i18n="email">E-post</label>
+                <input type="email" id="loginEmail" autocomplete="email" placeholder="din@epost.se" data-i18n-ph="emailPlaceholder">
+                <label for="loginPassword" data-i18n="password">Lösenord</label>
                 <input type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••">
-                <p class="login-error" id="loginError" hidden>Ange en giltig e-post och ett lösenord</p>
-                <button type="submit" class="btn-primary">Logga in</button>
+                <p class="login-error" id="loginError" data-i18n="loginError" hidden>Ange en giltig e-post och ett lösenord</p>
+                <button type="submit" class="btn-primary" data-i18n="login">Logga in</button>
             </form>
         </div>
     </div>
@@ -117,16 +121,16 @@
         <!-- Hero -->
         <section class="hero">
             <div class="hero-text">
-                <span class="hero-badge">Hantverksmuggar &amp; kaffefilter</span>
-                <h1>Ditt kaffe förtjänar en mugg med personlighet</h1>
-                <p class="hero-subtitle">
+                <span class="hero-badge" data-i18n="heroBadge">Hantverksmuggar &amp; kaffefilter</span>
+                <h1 data-i18n="heroTitle">Ditt kaffe förtjänar en mugg med personlighet</h1>
+                <p class="hero-subtitle" data-i18n="heroSubtitle">
                     Hos BrewCoff designar vi porslinsmuggar och kaffefilter som gör
                     vardagliga fikastunder lite finare. Enkel design, tåliga material
                     och tryck som håller – disk för disk.
                 </p>
                 <div class="hero-actions">
-                    <button class="btn-primary" onclick="scrollToSection('produkter')">Se alla produkter</button>
-                    <button class="btn-secondary" onclick="scrollToSection('om-oss')">Läs om oss</button>
+                    <button class="btn-primary" data-i18n="heroCta" onclick="scrollToSection('produkter')">Se alla produkter</button>
+                    <button class="btn-secondary" data-i18n="heroCta2" onclick="scrollToSection('om-oss')">Läs om oss</button>
                 </div>
             </div>
             <div class="hero-image">
@@ -137,13 +141,13 @@
         <!-- Produkt Neo -->
         <section id="produkter" class="catalog-header">
             <div class="filter-pills">
-                <button class="filter-pill active" onclick="filterCategory('all', this)">Alla</button>
-                <button class="filter-pill" onclick="filterCategory('motiv', this)">Muggar</button>
-                <button class="filter-pill" onclick="filterCategory('filter', this)">Kaffefilter</button>
+                <button class="filter-pill active" data-cat="all" data-i18n="all" onclick="filterCategory('all', this)">Alla</button>
+                <button class="filter-pill" data-cat="motiv" data-i18n="mugs" onclick="filterCategory('motiv', this)">Muggar</button>
+                <button class="filter-pill" data-cat="filter" data-i18n="filters" onclick="filterCategory('filter', this)">Kaffefilter</button>
             </div>
             <div class="search-box">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <input type="text" placeholder="Sök mugg eller filter..." onkeyup="searchProducts(this.value)">
+                <input type="text" placeholder="Sök mugg eller filter..." data-i18n-ph="searchPlaceholder" onkeyup="searchProducts(this.value)">
             </div>
         </section>
 
@@ -155,38 +159,38 @@
         <section id="studio" class="custom-studio-section">
             <div class="studio-wrap">
                 <div class="studio-header">
-                    <span class="studio-eyebrow">BrewCoff Studio</span>
-                    <h2>Tillverka din egen mugg</h2>
-                    <p>Skriv din egen text eller ladda upp en bild – vi trycker den på en klassisk BrewCoff-porslinsmugg i färgen du vill.</p>
+                    <span class="studio-eyebrow" data-i18n="studioEyebrow">BrewCoff Studio</span>
+                    <h2 data-i18n="studioTitle">Tillverka din egen mugg</h2>
+                    <p data-i18n="studioDesc">Skriv din egen text eller ladda upp en bild – vi trycker den på en klassisk BrewCoff-porslinsmugg i färgen du vill.</p>
                 </div>
 
                 <div class="studio-card">
                     <div class="studio-preview">
                         <canvas id="studioCanvas" width="660" height="660"></canvas>
-                        <span class="studio-preview-note">Förhandsvisning</span>
+                        <span class="studio-preview-note" data-i18n="studioPreview">Förhandsvisning</span>
                     </div>
 
                     <div class="studio-controls">
                         <div class="studio-field">
-                            <label>1. Välj design</label>
+                            <label data-i18n="studioStep1">1. Välj design</label>
                             <div class="studio-seg">
-                                <button type="button" class="studio-seg-btn active" data-mode="text" onclick="studioSetMode('text')">Text</button>
-                                <button type="button" class="studio-seg-btn" data-mode="image" onclick="studioSetMode('image')">Egen bild</button>
+                                <button type="button" class="studio-seg-btn active" data-mode="text" data-i18n="studioTextMode" onclick="studioSetMode('text')">Text</button>
+                                <button type="button" class="studio-seg-btn" data-mode="image" data-i18n="studioImageMode" onclick="studioSetMode('image')">Egen bild</button>
                             </div>
 
                             <div class="studio-mode-panel" id="studioTextPanel">
                                 <div class="studio-input-row">
-                                    <input type="text" id="studioText" maxlength="32" placeholder="Skriv din text, t.ex. Världens bästa mamma" oninput="studioOnTextInput()">
+                                    <input type="text" id="studioText" maxlength="32" placeholder="Skriv din text, t.ex. Världens bästa mamma" data-i18n-ph="studioTextPlaceholder" oninput="studioOnTextInput()">
                                     <span class="studio-counter" id="studioCounter">0/32</span>
                                 </div>
                                 <div class="studio-range-row">
-                                    <label for="studioFontSize">Storlek</label>
+                                    <label for="studioFontSize" data-i18n="studioSize">Storlek</label>
                                     <input type="range" id="studioFontSize" min="24" max="72" value="44" oninput="studioOnFontResize()">
                                 </div>
                                 <select class="studio-select" id="studioFont" onchange="studioOnFontChange()">
-                                    <option value="serif">Elegant serif</option>
-                                    <option value="serif-italic">Kursiv serif</option>
-                                    <option value="sans">Modern sans</option>
+                                    <option value="serif" data-i18n="fontSerif">Elegant serif</option>
+                                    <option value="serif-italic" data-i18n="fontItalic">Kursiv serif</option>
+                                    <option value="sans" data-i18n="fontSans">Modern sans</option>
                                 </select>
                             </div>
 
@@ -194,38 +198,38 @@
                                 <label class="studio-dropzone" for="studioFile">
                                     <input type="file" id="studioFile" accept="image/*" onchange="studioOnFile(this)" hidden>
                                     <span class="studio-dropzone-icon">🖼️</span>
-                                    <span>Ladda upp en bild (PNG eller JPG)</span>
-                                    <small>Skärpast: logotyper och icikoner med tydlig kontur</small>
+                                    <span data-i18n="studioUpload">Ladda upp en bild (PNG eller JPG)</span>
+                                    <small data-i18n="studioUploadNote">Skärpast: logotyper och icikoner med tydlig kontur</small>
                                 </label>
                                 <span class="studio-filename" id="studioFileName"></span>
                             </div>
                         </div>
 
                         <div class="studio-field">
-                            <label>2. Muggfärg</label>
+                            <label data-i18n="studioStep2">2. Muggfärg</label>
                             <div class="studio-swatches" id="studioMugSwatches"></div>
                         </div>
 
                         <div class="studio-field" id="studioTextColorField">
-                            <label>3. Tryckfärg</label>
+                            <label data-i18n="studioStep3">3. Tryckfärg</label>
                             <div class="studio-swatches" id="studioTextSwatches"></div>
                             <label class="studio-custom-color">
                                 <input type="color" id="studioCustomColor" value="#181c19" oninput="studioOnCustomColor(this.value)">
-                                <span>Egen färg</span>
+                                <span data-i18n="studioCustomColor">Egen färg</span>
                             </label>
                         </div>
 
                         <div class="studio-actions">
                             <div class="studio-price">
                                 <strong>149 kr</strong>
-                                <span>inkl. tryck</span>
+                                <span data-i18n="studioPrintIncluded">inkl. tryck</span>
                             </div>
                             <div class="studio-btns">
-                                <button type="button" class="studio-btn-primary" onclick="studioAddToCart()">Lägg till i varukorg</button>
+                                <button type="button" class="studio-btn-primary" data-i18n="addToCart" onclick="studioAddToCart()">Lägg till i varukorg</button>
                             </div>
-                            <button type="button" class="studio-reset" onclick="studioReset()">Återställ design</button>
+                            <button type="button" class="studio-reset" data-i18n="studioReset" onclick="studioReset()">Återställ design</button>
                             <p class="studio-status" id="studioStatus"></p>
-                            <p class="studio-fineprint">Leveranstid för personliga muggar: 5–7 dagar. Förhandsvisningen är en guide – det slutliga trycket kan variera något.</p>
+                            <p class="studio-fineprint" data-i18n="studioFineprint">Leveranstid för personliga muggar: 5–7 dagar. Förhandsvisningen är en guide – det slutliga trycket kan variera något.</p>
                         </div>
                     </div>
                 </div>
@@ -236,9 +240,9 @@
         <section id="om-oss" class="about-section">
             <div class="about-inner">
                 <div class="about-header">
-                    <span class="section-tag">Om oss</span>
-                    <h2>Kaffe med hjärta, muggar med karaktär</h2>
-                    <p>
+                    <span class="section-tag" data-i18n="navAbout">Om oss</span>
+                    <h2 data-i18n="aboutTitle">Kaffe med hjärta, muggar med karaktär</h2>
+                    <p data-i18n="aboutText">
                         BrewCoff startade med en enkel idé: att fika ska vara en liten stund
                         för dig själv. Vi designar våra muggar i små serier och lägger stor
                         vikt vid både materialkvalitet och hållbarhet, så att din mugg håller
@@ -250,22 +254,22 @@
                         <div class="about-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>
                         </div>
-                        <h3>Hantverkskvalitet</h3>
-                        <p>Våra muggar formas i tålig porslin och kontrolleras för hand innan de skickas vidare till dig.</p>
+                        <h3 data-i18n="aboutCard1Title">Hantverkskvalitet</h3>
+                        <p data-i18n="aboutCard1Text">Våra muggar formas i tålig porslin och kontrolleras för hand innan de skickas vidare till dig.</p>
                     </div>
                     <div class="about-card">
                         <div class="about-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
                         </div>
-                        <h3>Omsorg om miljön</h3>
-                        <p>Vi packar i papper, inte plast, och väljer material som håller i många år – inte bara en säsong.</p>
+                        <h3 data-i18n="aboutCard2Title">Omsorg om miljön</h3>
+                        <p data-i18n="aboutCard2Text">Vi packar i papper, inte plast, och väljer material som håller i många år – inte bara en säsong.</p>
                     </div>
                     <div class="about-card">
                         <div class="about-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
                         </div>
-                        <h3>Snabb leverans</h3>
-                        <p>Vi skickar din order inom 1–3 vardagar, och frakten är gratis vid köp över 299 kr.</p>
+                        <h3 data-i18n="aboutCard3Title">Snabb leverans</h3>
+                        <p data-i18n="aboutCard3Text">Vi skickar din order inom 1–3 vardagar, och frakten är gratis vid köp över 299 kr.</p>
                     </div>
                 </div>
             </div>
@@ -275,11 +279,11 @@
     <!-- Intern Produktsida -->
     <div id="productDetailView" class="product-detail-view" style="display: none;">
         <div class="product-detail-container">
-            <button class="back-btn" onclick="showMainView()">
+            <button class="back-btn" data-i18n="backToProducts" onclick="showMainView()">
                 &larr; Tillbaka till produkter
             </button>
 
-            <button class="detail-nav detail-nav-prev" onclick="navigateProduct(-1)" aria-label="Föregående produkt">
+            <button class="detail-nav detail-nav-prev" onclick="navigateProduct(-1)" aria-label="Föregående produkt" data-i18n-aria="prevProduct">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
 
@@ -295,12 +299,12 @@
                     <p id="detailDesc" class="detail-desc"></p>
 
                     <div class="detail-actions">
-                        <button class="btn-primary detail-add-btn" id="detailAddToCartBtn">Lägg till i varukorg</button>
+                        <button class="btn-primary detail-add-btn" id="detailAddToCartBtn" data-i18n="addToCart">Lägg till i varukorg</button>
                     </div>
                 </div>
             </div>
 
-            <button class="detail-nav detail-nav-next" onclick="navigateProduct(1)" aria-label="Nästa produkt">
+            <button class="detail-nav detail-nav-next" onclick="navigateProduct(1)" aria-label="Nästa produkt" data-i18n-aria="nextProduct">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </button>
         </div>
@@ -310,36 +314,36 @@
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Varukorg">
         <div class="cart-header">
-            <h2 class="cart-title">Varukorg</h2>
-            <button class="cart-close-btn" onclick="toggleCart()" aria-label="Stäng varukorgen">&times;</button>
+            <h2 class="cart-title" data-i18n="cart">Varukorg</h2>
+            <button class="cart-close-btn" onclick="toggleCart()" aria-label="Stäng varukorgen" data-i18n-aria="closeCart">&times;</button>
         </div>
 
         <div class="cart-items" id="cartItems"></div>
 
         <div class="cart-footer" id="cartFooter">
-            <p class="cart-free-shipping">☕ Fri frakt vid beställningar över 299 kr</p>
+            <p class="cart-free-shipping" data-i18n="freeShipping">☕ Fri frakt vid beställningar över 299 kr</p>
             <p class="cart-shipping-note" id="shippingNote"></p>
             <div class="cart-progress-track">
                 <div class="cart-progress-fill" id="shippingProgress"></div>
             </div>
             <div class="cart-total-row">
-                <span>Subtotal</span>
+                <span data-i18n="subtotal">Subtotal</span>
                 <span id="cartSubtotal">0 kr</span>
             </div>
             <div class="cart-total-row">
-                <span>Frakt</span>
+                <span data-i18n="shipping">Frakt</span>
                 <span id="cartShipping">–</span>
             </div>
             <div class="cart-total-row cart-grand-total">
-                <span>Totalt</span>
+                <span data-i18n="total">Totalt</span>
                 <span id="cartTotal">0 kr</span>
             </div>
-            <button class="cart-checkout-btn" onclick="checkout()">Till kassan</button>
+            <button class="cart-checkout-btn" data-i18n="checkout" onclick="checkout()">Till kassan</button>
         </div>
     </div>
 
     <!-- Flytande varukorgsknapp -->
-    <button class="cart-fab" onclick="toggleCart()" aria-label="Öppna varukorgen">
+    <button class="cart-fab" onclick="toggleCart()" aria-label="Öppna varukorgen" data-i18n-aria="openCart">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="9" cy="21" r="1"></circle>
             <circle cx="20" cy="21" r="1"></circle>
@@ -354,45 +358,45 @@
   <div class="footer-grid">
     <div class="footer-col">
       <p class="footer-brand">BrewCoff</p>
-      <p>Brinner för härliga koppar kaffe och seriösa kaffefilter för dig som tar kaffe på allvar</p>
+      <p data-i18n="footerTagline">Brinner för härliga koppar kaffe och seriösa kaffefilter för dig som tar kaffe på allvar</p>
     </div>
 
     <div class="footer-col">
-      <h3>Handla</h3>
+      <h3 data-i18n="footerShop">Handla</h3>
       <ul>
-        <li><a href="#produkter" onclick="goToCategory('Muggar')">Muggar</a></li>
-<li><a href="#produkter" onclick="goToCategory('Kaffefilter')">Filter</a></li>
+        <li><a href="#produkter" data-i18n="mugs" onclick="goToCategory('motiv')">Muggar</a></li>
+<li><a href="#produkter" data-i18n="filters" onclick="goToCategory('filter')">Filter</a></li>
 
-        <li><a href="#egendesign">Egen Design</a></li>
+        <li><a href="#studio" data-i18n="footerCustom">Egen Design</a></li>
 
       </ul>
     </div>
 
     <div class="footer-col">
-      <h3>Kundservice</h3>
+      <h3 data-i18n="footerService">Kundservice</h3>
       <ul>
-        <li><a href="#frakt">Frakt &amp; leverans</a></li>
-        <li><a href="#returer">Returer och Reklamation</a></li>
-        <li><a href="#köpvillkor">Köpvillkor</a></li>
+        <li><a href="#frakt" data-i18n="footerShipping">Frakt &amp; leverans</a></li>
+        <li><a href="#returer" data-i18n="footerReturns">Returer och Reklamation</a></li>
+        <li><a href="#köpvillkor" data-i18n="footerTerms">Köpvillkor</a></li>
 
       </ul>
     </div>
 
     <div class="footer-col newsletter">
-      <h3>Kontakta oss</h3>
+      <h3 data-i18n="contact">Kontakta oss</h3>
       <ul>
   <li><a href="mailto:brewcoff@info.se">brewcoff@info.se</a></li>
         <li><a href="#telefonnummer"> 07 123 45 67</a></li>
-        <p>Helsingborg, Sverige</p>
+        <p data-i18n="footerAddress">Helsingborg, Sverige</p>
       </ul>
     </div>
   </div>
 
   <div class="footer-bottom">
-    <p>&copy; 2025 BrewCoff. Alla rättigheter förbehållna. Bryggat med omsorg.</p>
+    <p data-i18n="footerCopyright">&copy; 2025 BrewCoff. Alla rättigheter förbehållna. Bryggat med omsorg.</p>
     <div>
-      <a href="#sekretesspolicy">Sekretesspolicy</a>
-      <a href="#villkor">Villkor</a>
+      <a href="#sekretesspolicy" data-i18n="footerPrivacy">Sekretesspolicy</a>
+      <a href="#villkor" data-i18n="footerTermsShort">Villkor</a>
       <span style="margin-left:1rem">Visa · Mastercard · PayPal</span>
     </div>
   </div>

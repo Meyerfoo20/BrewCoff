@@ -102,13 +102,63 @@
                 </button>
             </div>
             <form id="loginForm" novalidate>
+                <label for="loginName">Kontonamn</label>
+                <input type="text" id="loginName" placeholder="T.ex. Anna" autocomplete="name" maxlength="30">
                 <label for="loginEmail">E-post</label>
                 <input type="email" id="loginEmail" autocomplete="email" placeholder="din@epost.se">
                 <label for="loginPassword">Lösenord</label>
                 <input type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••">
+                <p class="login-type-label">Kontotyp</p>
+                <div class="login-types">
+                    <label class="login-type selected">
+                        <input type="radio" name="loginType" value="kund" checked>
+                        <span>Vanlig kund</span>
+                    </label>
+                    <label class="login-type">
+                        <input type="radio" name="loginType" value="foretag">
+                        <span>Företagkund</span>
+                    </label>
+                    <label class="login-type">
+                        <input type="radio" name="loginType" value="admin">
+                        <span>Admin</span>
+                    </label>
+                </div>
+                <input type="text" id="loginAdminCode" placeholder="Adminkod (krävs för admin)" maxlength="4" inputmode="numeric" autocomplete="off" hidden>
                 <p class="login-error" id="loginError" hidden>Ange en giltig e-post och ett lösenord</p>
                 <button type="submit" class="btn-primary">Logga in</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Kontovyn Rasmus -->
+    <div class="login-overlay" id="accountOverlay">
+        <div class="login-dialog" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+            <div class="login-header">
+                <h2 id="accountTitle">Konto</h2>
+                <button class="login-close" id="accountClose" type="button" aria-label="Stäng kontovyn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="account-section">
+                <p class="account-row"><span class="account-label">Kontonamn</span>
+                    <span class="account-name-wrap">
+                        <span class="account-value" id="accountName">–</span>
+                        <input type="text" class="account-name-input" id="accountNameInput" maxlength="30" hidden>
+                        <button class="account-edit-btn" id="accountNameSave" type="button" hidden aria-label="Spara kontonamn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
+                        <button class="account-edit-btn" id="accountNameEdit" type="button" aria-label="Redigera kontonamn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                        </button>
+                    </span>
+                </p>
+                <p class="account-row"><span class="account-label">E-post</span><span class="account-value" id="accountEmail">–</span></p>
+                <p class="account-row"><span class="account-label">Kontotyp</span><span class="account-value" id="accountType">–</span></p>
+            </div>
+            <div class="account-section">
+                <h3 class="account-purchases-title">Tidigare köp</h3>
+                <div class="account-purchases" id="accountPurchases"></div>
+            </div>
         </div>
     </div>
 

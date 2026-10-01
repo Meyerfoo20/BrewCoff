@@ -1064,40 +1064,166 @@ renderCart();
         });
     });
 
-    // ===== Inloggning (Rasmus) =====
-    // Demo-inloggning (ingen backend): giltig e-post + lösenord = "inloggad".
-    // Kontot sparas i localStorage; klicka på posten igen för att logga ut.
+    // ===== Inloggning & kontovyn (Rasmus) =====
+    // Demo-inloggning (ingen backend): en mejl reserveras som konto när den
+    // används första gången (sparas i localStorage). Samma mejl kräver samma
+    // lösenord; kontonamnet sparas/uppdateras vid inloggning. Admin kräver
+    // bekräftelsekoden 0005 när kontot skapas.
+    const ACCOUNTS_KEY = 'brewcoff-accounts';
+    const USER_KEY = 'brewcoff-user';
+    const NAME_KEY = 'brewcoff-user-name';
+    const TYPE_KEY = 'brewcoff-user-type';
+    const ORDERS_PREFIX = 'brewcoff-orders:';
+    const ADMIN_CODE = '0005';
+    const TYPE_LABELS = { kund: 'Vanlig kund', foretag: 'Företagkund', admin: 'Admin' };
+
     const loginItem = document.getElementById('loginItem');
     const loginOverlay = document.getElementById('loginOverlay');
     const loginForm = document.getElementById('loginForm');
     const loginEmail = document.getElementById('loginEmail');
     const loginPassword = document.getElementById('loginPassword');
+    const loginName = document.getElementById('loginName');
     const loginError = document.getElementById('loginError');
     const loginClose = document.getElementById('loginClose');
+    const loginAdminCode = document.getElementById('loginAdminCode');
     const loginLabel = loginItem ? loginItem.querySelector('.sidebar-item-label') : null;
     const logoutItem = document.getElementById('logoutItem');
+    const accountOverlay = document.getElementById('accountOverlay');
+    const accountClose = document.getElementById('accountClose');
+    const accountName = document.getElementById('accountName');
+    const accountEmail = document.getElementById('accountEmail');
+    const accountType = document.getElementById('accountType');
+    const accountPurchases = document.getElementById('accountPurchases');
     let setLogin = null;
+    let setAccount = null;
+    let nameEditing = false;
+    let stopNameEdit = null;
+
+    function escapeHtml(text) {
+        return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Kontoregistrat: reserverade mejl -> { password, name, type }
+    function loadAccounts() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '{}');
+            return (saved && typeof saved === 'object' && !Array.isArray(saved)) ? saved : {};
+        } catch (err) { return {}; }
+    }
+
+    function saveAccounts(accounts) {
+        try { localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts)); } catch (err) { /* lagret fullt – ignorera */ }
+    }
+
+    // ===== Köphistorik (Rasmus) =====
+    // Vrapar kassan så att köp sparas i köphistoriken för inloggade användare.
+    // Antons checkout() ändras inte – den anropas som den är.
+    const originalCheckout = window.checkout;
+    if (typeof originalCheckout === 'function' && typeof cart !== 'undefined' && Array.isArray(cart)) {
+        window.checkout = function () {
+            const user = localStorage.getItem(USER_KEY);
+            const items = cart.length > 0
+                ? cart.map((item) => ({ name: item.name, price: item.price, qty: item.qty }))
+                : [];
+            const total = typeof cartSubtotal === 'function' && typeof shippingCost === 'function'
+                ? cartSubtotal() + shippingCost()
+                : 0;
+            originalCheckout();
+            if (!user || items.length === 0) return;
+            const key = ORDERS_PREFIX + user;
+            let orders = [];
+            try { orders = JSON.parse(localStorage.getItem(key) || '[]'); } catch (err) { orders = []; }
+            if (!Array.isArray(orders)) orders = [];
+            orders.push({ date: new Date().toISOString(), items: items, total: total });
+            try { localStorage.setItem(key, JSON.stringify(orders)); } catch (err) { /* lagret fullt – ignorera */ }
+        };
+    }
 
     if (loginItem && loginOverlay && loginForm && loginEmail && loginPassword) {
-        const USER_KEY = 'brewcoff-user';
-
         setLogin = (open) => {
             loginOverlay.classList.toggle('open', open);
             document.body.classList.toggle('login-open', open);
         };
 
+        setAccount = (open) => {
+            if (accountOverlay) accountOverlay.classList.toggle('open', open);
+            document.body.classList.toggle('login-open', open);
+        };
+
         function refreshLoginLabel() {
             const user = localStorage.getItem(USER_KEY);
-            if (loginLabel) loginLabel.textContent = user ? user : 'Logga in';
+            if (loginLabel) {
+                // Visa kontonamnet på knappen (e-post som reserv om inget namn finns)
+                const name = user ? (localStorage.getItem(NAME_KEY) || '') : '';
+                loginLabel.textContent = name || user || 'Logga in';
+            }
             if (logoutItem) logoutItem.classList.toggle('visible', Boolean(user));
         }
 
+        // Kontotyp: markera vald knapp + visa/dölj fältet för adminkod
+        const typeInputs = loginForm.querySelectorAll('input[name="loginType"]');
+        function syncTypeUI() {
+            typeInputs.forEach((input) => {
+                const label = input.closest('.login-type');
+                if (label) label.classList.toggle('selected', input.checked);
+            });
+            if (loginAdminCode) {
+                const adminChecked = loginForm.querySelector('input[name="loginType"][value="admin"]');
+                loginAdminCode.hidden = !adminChecked || !adminChecked.checked;
+            }
+        }
+        typeInputs.forEach((input) => input.addEventListener('change', syncTypeUI));
+
+        function renderAccountPurchases(user) {
+            if (!accountPurchases) return;
+            let orders = [];
+            try { orders = JSON.parse(localStorage.getItem(ORDERS_PREFIX + user) || '[]'); } catch (err) { orders = []; }
+            if (!Array.isArray(orders) || orders.length === 0) {
+                accountPurchases.innerHTML = '<p class="account-empty">Inga köp ännu.</p>';
+                return;
+            }
+            const formatPrice = typeof formatKr === 'function' ? formatKr : (n) => n + ' kr';
+            accountPurchases.innerHTML = orders.map((order) => {
+                const date = new Date(order.date).toLocaleDateString('sv-SE', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                });
+                const items = (order.items || []).map((item) =>
+                    item.qty + '× ' + escapeHtml(item.name) + ' – ' + formatPrice(item.price * item.qty)
+                ).join('<br>');
+                return '<div class="account-order">' +
+                    '<p class="account-order-date">' + escapeHtml(date) + '</p>' +
+                    '<p class="account-order-items">' + items + '</p>' +
+                    '<p class="account-order-total">Totalt: ' + formatPrice(order.total) + '</p>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function openAccountView(user) {
+            if (stopNameEdit) stopNameEdit();
+            if (accountName) accountName.textContent = localStorage.getItem(NAME_KEY) || '–';
+            if (accountEmail) accountEmail.textContent = user;
+            if (accountType) {
+                const type = localStorage.getItem(TYPE_KEY) || 'kund';
+                accountType.textContent = TYPE_LABELS[type] || TYPE_LABELS.kund;
+            }
+            renderAccountPurchases(user);
+            setAccount(true);
+        }
+
         loginItem.addEventListener('click', () => {
-            // Inloggade ser sitt konto här – ingen åtgärd (loggning sker via "Logga ut")
-            if (localStorage.getItem(USER_KEY)) return;
+            const user = localStorage.getItem(USER_KEY);
+            if (user) {
+                // Inloggad -> öppna kontovynen
+                setMenu(false);
+                openAccountView(user);
+                return;
+            }
             setMenu(false);
+            if (loginName) loginName.value = localStorage.getItem(NAME_KEY) || '';
             loginEmail.value = '';
             loginPassword.value = '';
+            if (loginAdminCode) loginAdminCode.value = '';
+            syncTypeUI();
             if (loginError) loginError.hidden = true;
             setLogin(true);
             loginEmail.focus();
@@ -1105,15 +1231,54 @@ renderCart();
 
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = loginEmail.value.trim();
-            if (!email.includes('@') || loginPassword.value.length === 0) {
-                if (loginError) loginError.hidden = false;
+            const email = loginEmail.value.trim().toLowerCase();
+            const password = loginPassword.value;
+            const name = loginName ? loginName.value.trim() : '';
+            // E-post och lösenord är obligatoriska
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || password.length === 0) {
+                if (loginError) {
+                    loginError.textContent = 'Ange en giltig e-post och ett lösenord';
+                    loginError.hidden = false;
+                }
                 return;
             }
+            const accounts = loadAccounts();
+            if (accounts[email]) {
+                // Reserverad mejl: kräver samma lösenord, kontotypen behålls
+                // och kontonamnet sparas/uppdateras
+                if (password !== accounts[email].password) {
+                    if (loginError) {
+                        loginError.textContent = 'Fel lösenord för denna e-post';
+                        loginError.hidden = false;
+                    }
+                    return;
+                }
+                if (name) accounts[email].name = name;
+            } else {
+                // Ny mejl -> reserveras som ett nytt konto
+                const typeInput = loginForm.querySelector('input[name="loginType"]:checked');
+                const accountTypeValue = typeInput ? typeInput.value : 'kund';
+                if (accountTypeValue === 'admin') {
+                    const code = loginAdminCode ? loginAdminCode.value.trim() : '';
+                    if (code !== ADMIN_CODE) {
+                        if (loginError) {
+                            loginError.textContent = 'Fel adminkod';
+                            loginError.hidden = false;
+                        }
+                        return;
+                    }
+                }
+                accounts[email] = { password: password, name: name, type: accountTypeValue };
+            }
+            saveAccounts(accounts);
+            const account = accounts[email];
             localStorage.setItem(USER_KEY, email);
+            if (account.name) localStorage.setItem(NAME_KEY, account.name);
+            else localStorage.removeItem(NAME_KEY);
+            localStorage.setItem(TYPE_KEY, account.type);
             refreshLoginLabel();
             setLogin(false);
-            if (typeof showToast === 'function') showToast('Välkommen, ' + email);
+            if (typeof showToast === 'function') showToast('Välkommen, ' + (account.name || email));
         });
 
         if (loginClose) loginClose.addEventListener('click', () => setLogin(false));
@@ -1121,22 +1286,87 @@ renderCart();
             if (e.target === loginOverlay) setLogin(false);
         });
 
+        if (accountClose) accountClose.addEventListener('click', () => setAccount(false));
+        if (accountOverlay) {
+            accountOverlay.addEventListener('click', (e) => {
+                if (e.target === accountOverlay) setAccount(false);
+            });
+        }
+
+        // Redigera kontonamn direkt i kontovynen (Rasmus)
+        const accountNameInput = document.getElementById('accountNameInput');
+        const accountNameEdit = document.getElementById('accountNameEdit');
+        const accountNameSave = document.getElementById('accountNameSave');
+
+        stopNameEdit = () => {
+            nameEditing = false;
+            if (accountNameInput) accountNameInput.hidden = true;
+            if (accountName) accountName.hidden = false;
+            if (accountNameEdit) accountNameEdit.hidden = false;
+            if (accountNameSave) accountNameSave.hidden = true;
+        };
+
+        function startNameEdit() {
+            if (!accountNameInput || !localStorage.getItem(USER_KEY)) return;
+            nameEditing = true;
+            accountNameInput.value = localStorage.getItem(NAME_KEY) || '';
+            accountNameInput.hidden = false;
+            if (accountName) accountName.hidden = true;
+            if (accountNameEdit) accountNameEdit.hidden = true;
+            if (accountNameSave) accountNameSave.hidden = false;
+            accountNameInput.focus();
+            accountNameInput.select();
+        }
+
+        function saveNameEdit() {
+            const user = localStorage.getItem(USER_KEY);
+            if (!user) { stopNameEdit(); return; }
+            const name = accountNameInput ? accountNameInput.value.trim() : '';
+            const accounts = loadAccounts();
+            if (accounts[user]) {
+                accounts[user].name = name;
+                saveAccounts(accounts);
+            }
+            if (name) localStorage.setItem(NAME_KEY, name);
+            else localStorage.removeItem(NAME_KEY);
+            stopNameEdit();
+            if (accountName) accountName.textContent = name || '–';
+            refreshLoginLabel();
+            if (typeof showToast === 'function') showToast(name ? 'Kontonamnet uppdaterades' : 'Kontonamnet togs bort');
+        }
+
+        if (accountNameEdit) accountNameEdit.addEventListener('click', startNameEdit);
+        if (accountNameSave) accountNameSave.addEventListener('click', saveNameEdit);
+        if (accountNameInput) {
+            accountNameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveNameEdit();
+                }
+            });
+        }
+
         // "Logga ut"-knappen i botten av sidmenyn (synlig bara när inloggad)
         if (logoutItem) {
             logoutItem.addEventListener('click', () => {
                 localStorage.removeItem(USER_KEY);
+                localStorage.removeItem(NAME_KEY);
+                localStorage.removeItem(TYPE_KEY);
                 refreshLoginLabel();
                 if (typeof showToast === 'function') showToast('Du har loggat ut');
             });
         }
 
+        syncTypeUI();
         refreshLoginLabel();
     }
 
-    // Escape stänger först inloggningspopppen, sedan sidmenyn
+    // Escape stänger först redigeringen, sedan kontovynen, sedan inloggningspopppen, sedan sidmenyn
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        if (loginOverlay && loginOverlay.classList.contains('open') && setLogin) setLogin(false);
+        if (nameEditing && stopNameEdit) { stopNameEdit(); return; }
+        if (accountOverlay && accountOverlay.classList.contains('open') && setAccount) setAccount(false);
+        else if (loginOverlay && loginOverlay.classList.contains('open') && setLogin) setLogin(false);
         else setMenu(false);
     });
 })();

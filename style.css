@@ -1020,6 +1020,11 @@ html {
 .cart-item-img-custom img {
     object-fit: contain;
 }
+.cart-mug-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 .cart-item-info {
     flex: 1;
     min-width: 0;

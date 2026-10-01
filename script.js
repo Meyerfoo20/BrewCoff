@@ -265,7 +265,10 @@ Init – anropas av DOMContentLoaded högre upp i filen
 ------------------------------------------------------------ */
 
 function initCanvas() {
-STUDIO_MUG_IMG.onload = () => studioRender();
+STUDIO_MUG_IMG.onload = () => {
+    studioRender();
+    studioRenderCartPreviews(); // muggbilden är nu laddad – rita ev. cart-previews igen
+};
 STUDIO_MUG_IMG.onerror = () => studioRender(); // placeholder istället
 STUDIO_MUG_IMG.src = 'Images/Stock-Mugg.png';
 
@@ -280,7 +283,10 @@ Promise.all([
     document.fonts.load('700 48px "Playfair Display"'),
     document.fonts.load('italic 700 48px "Playfair Display"'),
     document.fonts.load('700 48px "Plus Jakarta Sans"')
-]).then(() => studioRender()).catch(() => {});
+]).then(() => {
+    studioRender();
+    studioRenderCartPreviews(); // webfonten är klar – rita texten rätt
+}).catch(() => {});
 }
 }
 
@@ -325,8 +331,8 @@ studioDrawImage(ctx, box);
 ctx.restore();
 }
 
-function studioTintedMug() {
-const color = STUDIO_MUG_COLORS.find(c => c.id === studioState.mugColorId);
+function studioTintedMug(colorId) {
+const color = STUDIO_MUG_COLORS.find(c => c.id === (colorId || studioState.mugColorId));
 if (!color || !color.tint) return STUDIO_MUG_IMG;
 
 // Offscreen: rita muggen och lägg färgtonen bara ovanpå opake
@@ -357,9 +363,9 @@ if (ctx.roundRect) ctx.roundRect(x, y, w, h, r);
 else ctx.rect(x, y, w, h);
 }
 
-function studioFontString(px) {
+function studioFontString(px, fontId) {
 // Bygg ut font-strings med explicit storlek (1em → px)
-return STUDIO_FONTS[studioState.font].replace('1em', px + 'px');
+return STUDIO_FONTS[fontId || studioState.font].replace('1em', px + 'px');
 }
 
 function studioDrawText(ctx, box) {
@@ -389,8 +395,8 @@ ctx.fillText(line, box.x + box.w / 2, startY + i * lineH);
 });
 }
 
-function studioWrapText(ctx, text, maxWidth, size) {
-ctx.font = studioFontString(size);
+function studioWrapText(ctx, text, maxWidth, size, fontId) {
+ctx.font = studioFontString(size, fontId);
 const words = text.split(/\s+/).filter(Boolean);
 const lines = [];
 let current = '';
@@ -561,6 +567,7 @@ return 'Personlig mugg – tryckt egen bild' + (studioState.fileName ? ' (' + st
 
 function studioThumbnailDataURL(size) {
 const canvas = document.getElementById('studioCanvas');
+if (!canvas) return null;
 const small = document.createElement('canvas');
 small.width = size;
 small.height = size;
@@ -569,9 +576,111 @@ try {
     return small.toDataURL('image/png');
 } catch (e) {
     // "Tainted canvas" t.ex. om sidan öppnas via file:// –
-    // falla tillbaka på standardmuggen så muggen ändå hamnar i varukorgen
-    return 'Images/Stock-Mugg.png';
+    // anroparen väljer då vilken fallback-bild som ska användas
+    return null;
 }
+}
+
+/* ------------------------------------------------------------
+Designsnapshot – sparas på varukorgsraden så att förhandsvisningen
+kan ritas direkt på canvas i varukorgen. Fungerar även via file://
+där webbläsaren blockerar canvas-export (toDataURL).
+------------------------------------------------------------ */
+
+function studioDesignSnapshot() {
+const snapshot = {
+    mode: studioState.mode,
+    text: studioState.text,
+    fontSize: studioState.fontSize,
+    font: studioState.font,
+    textColor: studioState.textColor,
+    mugColorId: studioState.mugColorId,
+    fileName: studioState.fileName,
+    image: null
+};
+if (studioState.mode === 'image' && studioState.uploadedImage) {
+    // Downscajad bild som data-URL – klarar localStorage och taintar
+    // inte canvasen (data-URL är same-origin)
+    snapshot.image = studioDownscaleImage(studioState.uploadedImage, 240);
+}
+return snapshot;
+}
+
+function studioDownscaleImage(img, maxSize) {
+try {
+    const scale = Math.min(1, maxSize / Math.max(img.naturalWidth, img.naturalHeight));
+    const off = document.createElement('canvas');
+    off.width = Math.max(1, Math.round(img.naturalWidth * scale));
+    off.height = Math.max(1, Math.round(img.naturalHeight * scale));
+    off.getContext('2d').drawImage(img, 0, 0, off.width, off.height);
+    return off.toDataURL('image/png');
+} catch (e) {
+    return null;
+}
+}
+
+function studioRenderCartPreviews() {
+const itemsEl = document.getElementById('cartItems');
+if (!itemsEl) return;
+itemsEl.querySelectorAll('.cart-mug-canvas').forEach(canvas => {
+    const item = cart[parseInt(canvas.dataset.idx, 10)];
+    if (item && item.design) studioDrawDesign(canvas, item.design);
+});
+}
+
+function studioDrawDesign(canvas, design) {
+const ctx = canvas.getContext('2d');
+const W = canvas.width;
+const H = canvas.height;
+ctx.clearRect(0, 0, W, H);
+
+// Muggen (med ev. färgton)
+if (STUDIO_MUG_IMG.complete && STUDIO_MUG_IMG.naturalWidth > 0) {
+    ctx.drawImage(studioTintedMug(design.mugColorId), 0, 0, W, H);
+}
+
+// Designen, klippt inuti tryckyta
+const box = studioPrintBox(W, H);
+ctx.save();
+studioClipRoundRect(ctx, box.x, box.y, box.w, box.h, 4);
+ctx.clip();
+
+if (design.mode === 'text' && (design.text || '').trim()) {
+    // Studions canvas är 660px – skala om textstorleken till mini-canvas
+    const scale = W / 660;
+    let size = Math.max(6, design.fontSize * scale);
+    let lines = studioWrapText(ctx, design.text, box.w * 0.92, size, design.font);
+    const lineHeight = 1.18;
+    while (lines.length > 1 && lines.length * size * lineHeight > box.h * 0.92 && size > 4) {
+        size -= 1;
+        lines = studioWrapText(ctx, design.text, box.w * 0.92, size, design.font);
+    }
+    ctx.fillStyle = design.textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = studioFontString(size, design.font);
+    const lineH = size * lineHeight;
+    const startY = box.y + box.h / 2 - ((lines.length - 1) * lineH) / 2;
+    lines.forEach((line, i) => {
+        ctx.fillText(line, box.x + box.w / 2, startY + i * lineH);
+    });
+} else if (design.mode === 'image' && design.image) {
+    const img = new Image();
+    img.onload = () => {
+        const c2 = canvas.getContext('2d');
+        c2.save();
+        studioClipRoundRect(c2, box.x, box.y, box.w, box.h, 4);
+        c2.clip();
+        const s = Math.min((box.w * 0.92) / img.naturalWidth, (box.h * 0.92) / img.naturalHeight);
+        const w = img.naturalWidth * s;
+        const h = img.naturalHeight * s;
+        c2.drawImage(img, box.x + (box.w - w) / 2, box.y + (box.h - h) / 2, w, h);
+        c2.restore();
+    };
+    img.src = design.image;
+}
+
+ctx.restore();
 }
 
 const STUDIO_CART_ID = 9901; // Grund-id: studio-muggar får id 9901 + hash av designen
@@ -606,14 +715,18 @@ function studioAddToCart() {
 // Varukorgsarrayen (let högre upp i filen) delas i samma scope,
 // så vi pushar ett produkt-liknande objekt direkt.
 let added = false;
+let rawThumb = null;
+const design = studioDesignSnapshot();
 try {
 if (typeof cart !== 'undefined' && Array.isArray(cart)) {
     const id = studioDesignId();
+    rawThumb = studioThumbnailDataURL(220);
     const existing = cart.find(item => item.id === id);
     if (existing) {
         existing.qty += 1;
         existing.desc = studioDesignSummary();
-        existing.image = studioThumbnailDataURL(220);
+        existing.design = design;
+        if (rawThumb) existing.image = rawThumb; // behåll tidigare bild om exporten misslyckas
     } else {
         cart.push({
             id: id,
@@ -621,7 +734,8 @@ if (typeof cart !== 'undefined' && Array.isArray(cart)) {
             category: 'motiv',
             price: STUDIO_PRICE,
             desc: studioDesignSummary(),
-            image: studioThumbnailDataURL(220),
+            image: rawThumb || 'Images/Stock-Mugg.png',
+            design: design,
             qty: 1
         });
     }
@@ -699,7 +813,7 @@ function loadCartFromStorage() {
                 });
             } else if (item.id >= STUDIO_CART_ID && item.qty > 0) {
                 // Custom mugg från studio saknas i products – namn, pris,
-                // beskrivning och miniatyrbild sparas därför på item själv
+                // beskrivning, miniatyrbild och design sparas därför på item själv
                 cart.push({
                     id: item.id,
                     name: item.name || 'BrewCoff Custom Mugg',
@@ -707,6 +821,7 @@ function loadCartFromStorage() {
                     price: item.price || STUDIO_PRICE,
                     desc: item.desc,
                     image: item.image || 'Images/Stock-Mugg.png',
+                    design: item.design || null,
                     qty: item.qty
                 });
             }
@@ -804,10 +919,12 @@ function renderCart() {
 
     footerEl.style.display = 'block';
 
-    itemsEl.innerHTML = cart.map(item => `
+    itemsEl.innerHTML = cart.map((item, idx) => `
         <div class="cart-item">
-            <div class="cart-item-img${item.id >= STUDIO_CART_ID ? ' cart-item-img-custom' : ''}">
-                <img src="${item.image}" alt="${item.name}">
+            <div class="cart-item-img${item.design ? ' cart-item-img-custom' : ''}">
+                ${item.design
+                    ? `<canvas class="cart-mug-canvas" width="76" height="76" data-idx="${idx}"></canvas>`
+                    : `<img src="${item.image}" alt="${item.name}">`}
             </div>
             <div class="cart-item-info">
                 <h4 class="cart-item-name">${item.name}</h4>
@@ -847,6 +964,9 @@ function renderCart() {
         noteEl.textContent = 'Köp för ' + formatKr(FREE_SHIPPING_LIMIT - subtotal) + ' till för fri frakt';
         barEl.style.width = Math.min(100, (subtotal / FREE_SHIPPING_LIMIT) * 100) + '%';
     }
+
+    // Custom muggar: rita designen på respektive canvas (studio-funktionerna)
+    studioRenderCartPreviews();
 }
 
 // ===== Öppna / stäng =====

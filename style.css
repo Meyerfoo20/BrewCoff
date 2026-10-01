@@ -1650,6 +1650,57 @@ body.menu-open {
     pointer-events: none;
 }
 
+/* Språkundermeny i sidmenyn */
+.lang-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.lang-submenu {
+    list-style: none;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    margin: 6px 0 0 46px;
+    padding: 0;
+}
+
+.lang-submenu.open {
+    display: flex;
+}
+
+.lang-submenu button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.lang-submenu button:hover {
+    background: var(--accent-light);
+    color: var(--accent-main);
+}
+
+.lang-submenu button.active {
+    color: var(--accent-main);
+    font-weight: 600;
+}
+
+.lang-submenu button.active::before {
+    content: "✓";
+    font-size: 0.85rem;
+}
+
 /* "Logga ut" – visas i botten av sidmenyn när man är inloggad */
 .sidebar-logout {
     display: none;

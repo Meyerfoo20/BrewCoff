@@ -485,14 +485,6 @@ el.classList.toggle('active', el.dataset.colorId === id);
 studioRender();
 }
 
-function studioOnCustomColor(value) {
-studioState.textColor = value;
-document.querySelectorAll('#studioTextSwatches .studio-swatch').forEach(el => {
-el.classList.remove('active');
-});
-studioRender();
-}
-
 function studioBuildMugSwatches() {
 const wrap = document.getElementById('studioMugSwatches');
 if (!wrap) return;
@@ -549,9 +541,6 @@ const file = document.getElementById('studioFile');
 if (file) file.value = '';
 const name = document.getElementById('studioFileName');
 if (name) name.textContent = '';
-const custom = document.getElementById('studioCustomColor');
-if (custom) custom.value = '#181c19';
-
 studioSyncInputs();
 studioSetMode('text');
 studioSelectMugColor('white');
@@ -817,7 +806,7 @@ function renderCart() {
 
     itemsEl.innerHTML = cart.map(item => `
         <div class="cart-item">
-            <div class="cart-item-img">
+            <div class="cart-item-img${item.id >= STUDIO_CART_ID ? ' cart-item-img-custom' : ''}">
                 <img src="${item.image}" alt="${item.name}">
             </div>
             <div class="cart-item-info">

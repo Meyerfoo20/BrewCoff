@@ -1,9 +1,9 @@
 // Kontovyn (Rasmus)
 
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { NAME_KEY, TYPE_LABELS } from '../data/products.js'
+import { TYPE_LABELS } from '../data/products.js'
 import { formatKr } from '../lib/cart.js'
-import { loadAccounts, loadOrders, saveAccounts, storageRemove, storageSet } from '../lib/storage.js'
+import { loadOrders, saveUserProfile } from '../lib/storage.js'
 
 export default function AccountDialog({ open, user, onClose, onNameSaved }) {
     const [orders, setOrders] = useState([]);
@@ -14,8 +14,12 @@ export default function AccountDialog({ open, user, onClose, onNameSaved }) {
     // Läs köphistoriken och stäng namnredigeringen när dialogen öppnas
     useEffect(() => {
         if (!open || !user) return
-        setOrders(loadOrders(user.email));
+        let active = true;
+        loadOrders(user.uid)
+            .then(savedOrders => { if (active) setOrders(savedOrders); })
+            .catch(() => { if (active) setOrders([]); });
         setNameEditing(false);
+        return () => { active = false; };
     }, [open, user]);
 
     // Escape stänger först redigeringen, sedan kontovynen
@@ -44,18 +48,16 @@ export default function AccountDialog({ open, user, onClose, onNameSaved }) {
         setNameEditing(true);
     }
 
-    function saveNameEdit() {
+    async function saveNameEdit() {
         if (!user) { setNameEditing(false); return; }
         const name = editName.trim();
-        const accounts = loadAccounts();
-        if (accounts[user.email]) {
-            accounts[user.email].name = name;
-            saveAccounts(accounts);
+        try {
+            await saveUserProfile(user.uid, { name });
+            setNameEditing(false);
+            onNameSaved(name);
+        } catch (saveError) {
+            window.alert('Kunde inte spara kontonamnet. Försök igen.');
         }
-        if (name) storageSet(NAME_KEY, name);
-        else storageRemove(NAME_KEY);
-        setNameEditing(false);
-        onNameSaved(name);
     }
 
     return (
@@ -87,6 +89,7 @@ export default function AccountDialog({ open, user, onClose, onNameSaved }) {
                             </p>
                             <p className="account-row"><span className="account-label">E-post</span><span className="account-value">{user.email}</span></p>
                             <p className="account-row"><span className="account-label">Kontotyp</span><span className="account-value">{TYPE_LABELS[user.type] || TYPE_LABELS.kund}</span></p>
+                            <p className="account-row"><span className="account-label">Roll</span><span className="account-value">{user.role === 'admin' ? 'Admin' : 'User'}</span></p>
                         </div>
                         <div className="account-section">
                             <h3 className="account-purchases-title">Tidigare köp</h3>

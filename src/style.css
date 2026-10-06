@@ -2137,3 +2137,608 @@ body.login-open {
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== Kaffedrycker (externt API) ===== */
+.drinks-section {
+    max-width: 1200px;
+    margin: 0 auto 96px;
+    padding: 0 32px;
+}
+
+.drinks-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.drinks-header {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+.drinks-header h2 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1.2;
+    margin-bottom: 12px;
+}
+
+.drinks-header p {
+    color: var(--text-muted);
+}
+
+.drinks-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.drinks-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.drinks-random-btn {
+    padding: 10px 22px;
+}
+
+.drinks-random-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.drinks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 28px;
+}
+
+.drink-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-elevated);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition-smooth);
+}
+
+.drink-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent-pop);
+}
+
+.drink-img-wrapper {
+    position: relative;
+    height: 200px;
+    background: var(--bg-main);
+}
+
+.drink-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.drink-img.fallback {
+    object-fit: contain;
+    padding: 20px;
+}
+
+.drink-fav-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-card);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.drink-fav-btn:hover {
+    transform: scale(1.08);
+}
+
+.drink-fav-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: var(--text-muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+.drink-fav-btn.active svg {
+    fill: #c0392b;
+    stroke: #c0392b;
+}
+
+.drink-body {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.drink-title {
+    font-size: 1.2rem;
+    color: var(--text-main);
+}
+
+.drink-desc {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.drink-ingredients {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.drink-ingredients li {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-main);
+    background: var(--accent-light);
+    padding: 3px 10px;
+    border-radius: 12px;
+}
+
+.drink-timer-btn {
+    margin-top: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--accent-main);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.drink-timer-btn:hover {
+    border-color: var(--accent-main);
+    background: var(--accent-light);
+}
+
+.drink-timer-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Slumpad "Dagens kaffe" – bred variant av kortet */
+.drinks-featured {
+    position: relative;
+}
+
+.drink-card.featured {
+    flex-direction: row;
+    border-color: var(--accent-pop);
+}
+
+.drink-card.featured:hover {
+    transform: none;
+}
+
+.drink-card.featured .drink-img-wrapper {
+    width: 42%;
+    height: auto;
+    min-height: 260px;
+    flex-shrink: 0;
+}
+
+.drink-card.featured .drink-body {
+    padding: 28px 56px 28px 32px;
+}
+
+.drink-card.featured .drink-title {
+    font-size: 1.8rem;
+}
+
+.drink-card.featured .drink-desc {
+    -webkit-line-clamp: unset;
+    font-size: 0.95rem;
+}
+
+.drink-featured-tag {
+    margin-bottom: 0;
+}
+
+.drinks-featured-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.drinks-featured-close svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--text-main);
+    stroke-width: 2;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
+.drinks-empty,
+.drinks-notice {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.drinks-notice {
+    font-size: 0.9rem;
+    background: var(--accent-light);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+}
+
+.drinks-empty button,
+.drinks-notice button,
+.drinks-clear-btn {
+    font-family: inherit;
+    font-weight: 600;
+    color: var(--accent-main);
+    background: none;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.drinks-clear-btn {
+    align-self: center;
+    font-size: 0.9rem;
+}
+
+.drinks-source {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.drinks-source a {
+    color: inherit;
+}
+
+/* Flytande bryggtimer (nere till vänster, varukorgsknappen sitter till höger) */
+.brew-timer {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    z-index: 996;
+    width: 300px;
+    max-width: calc(100vw - 32px);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.brew-timer.done {
+    border-color: var(--accent-pop);
+}
+
+.brew-timer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.brew-timer-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.brew-timer-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.brew-timer-close svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: var(--text-main);
+    stroke-width: 2;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
+.brew-timer-time {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-main);
+    font-variant-numeric: tabular-nums;
+}
+
+.brew-timer.done .brew-timer-time {
+    color: var(--accent-pop);
+}
+
+.brew-timer-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg-alt);
+    overflow: hidden;
+}
+
+.brew-timer-bar span {
+    display: block;
+    height: 100%;
+    background: var(--accent-pop);
+    transition: width 0.25s linear;
+}
+
+.brew-timer-done {
+    font-size: 0.88rem;
+    color: var(--text-main);
+}
+
+.brew-timer-presets {
+    display: flex;
+    gap: 6px;
+}
+
+.brew-timer-presets button {
+    flex: 1;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.brew-timer-presets button.active {
+    color: var(--accent-main);
+    border-color: var(--accent-main);
+    background: var(--accent-light);
+}
+
+.brew-timer-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.brew-timer-actions .btn-primary {
+    flex: 1;
+    padding: 10px 16px;
+}
+
+.brew-timer-reset {
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+@media (max-width: 720px) {
+    .drinks-section {
+        padding: 0 16px;
+    }
+
+    .drink-card.featured {
+        flex-direction: column;
+    }
+
+    .drink-card.featured .drink-img-wrapper {
+        width: 100%;
+        min-height: 200px;
+    }
+
+    .drink-card.featured .drink-body {
+        padding: 20px;
+    }
+
+    .drinks-toolbar-right,
+    .drinks-toolbar-right .search-box {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .brew-timer {
+        left: 16px;
+        right: 16px;
+        bottom: 88px;
+        width: auto;
+    }
+}
+
+/* Kaffedrycker: klickbara kort + detaljvy med ingredienser */
+.drink-clickable {
+    cursor: pointer;
+}
+
+.drink-title-btn {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.drink-title-btn:hover {
+    color: var(--accent-pop);
+}
+
+.drink-actions {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.drink-actions .drink-timer-btn {
+    margin-top: 0;
+}
+
+.drink-timer-btn.active svg {
+    fill: #c0392b;
+    stroke: #c0392b;
+}
+
+.drink-dialog {
+    max-width: 560px;
+    max-height: calc(100vh - 32px);
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.drink-dialog-img {
+    position: relative;
+    height: 240px;
+    background: var(--bg-main);
+}
+
+.drink-dialog-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: var(--bg-card);
+}
+
+.drink-dialog-body {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.drink-dialog-body .section-tag {
+    margin-bottom: 0;
+}
+
+.drink-dialog-body h2 {
+    font-size: 1.8rem;
+    line-height: 1.2;
+    color: var(--text-main);
+}
+
+.drink-dialog-desc {
+    color: var(--text-muted);
+}
+
+.drink-dialog-subtitle {
+    font-family: inherit;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-main);
+    margin-top: 4px;
+}
+
+.drink-dialog-ingredients {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+}
+
+.drink-dialog-ingredients li {
+    padding: 10px 14px;
+    color: var(--text-main);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.drink-dialog-ingredients li + li {
+    border-top: 1px solid var(--border-color);
+}
+
+.drink-dialog-ingredients li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-pop);
+    flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+    .drink-dialog-img {
+        height: 180px;
+    }
+
+    .drink-dialog-body {
+        padding: 20px;
+    }
+}

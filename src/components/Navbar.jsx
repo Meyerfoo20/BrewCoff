@@ -12,6 +12,7 @@ export default function Navbar({ scrolled, menuOpen, onLogoClick, onNavigate, on
                     <div className="navbar-links">
                         <button className="navbar-link" onClick={() => onNavigate('produkter')}>Produkter</button>
                         <button className="navbar-link" onClick={() => onNavigate('studio')}>Custom mugg</button>
+                        <button className="navbar-link" onClick={() => onNavigate('kaffedrycker')}>Kaffedrycker</button>
                         <button className="navbar-link" onClick={() => onNavigate('om-oss')}>Om oss</button>
                     </div>
                     <button className="menu-btn" id="menuBtn" type="button" aria-label="Öppna meny" aria-expanded={menuOpen ? 'true' : 'false'} aria-controls="menuSidebar" onClick={onMenuToggle}>

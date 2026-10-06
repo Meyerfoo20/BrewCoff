@@ -1,0 +1,75 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function validProfile() {
+      return request.resource.data.keys().hasOnly(['email', 'name', 'type', 'role', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['email', 'name', 'type', 'role', 'updatedAt'])
+        && request.resource.data.type in ['kund', 'foretag']
+        && request.resource.data.role in ['user', 'admin'];
+    }
+
+    // Produkter som adminpanelen sparar: id, name, category, price, desc, image
+    function validProduct(productId) {
+      let p = request.resource.data;
+      return p.keys().hasOnly(['id', 'name', 'category', 'price', 'desc', 'image'])
+        && p.keys().hasAll(['id', 'name', 'category', 'price', 'desc', 'image'])
+        && p.id is int && string(p.id) == productId
+        && p.name is string && p.name.size() > 0 && p.name.size() <= 60
+        && p.category in ['motiv', 'filter']
+        && (p.price is int || p.price is float) && p.price > 0
+        && p.desc is string && p.desc.size() <= 300
+        && p.image is string && p.image.size() < 900000;
+    }
+
+    // Produktkatalogen: alla kan läsa, bara admin kan ändra
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && validProduct(productId);
+      allow delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && validProfile() && request.resource.data.role == 'user';
+      allow update: if validProfile() && (
+        (isOwner(userId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'type', 'updatedAt', 'role'])
+          && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
+              || request.resource.data.role == 'user'))
+        || (isAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'updatedAt']))
+      );
+      allow delete: if false;
+    }
+
+    match /carts/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create, update, delete: if isOwner(userId);
+    }
+
+    match /orders/{orderId} {
+      allow read: if (signedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['userId', 'date', 'items', 'total', 'createdAt'])
+        && request.resource.data.keys().hasAll(['userId', 'date', 'items', 'total', 'createdAt']);
+      allow update, delete: if false;
+    }
+  }
+}

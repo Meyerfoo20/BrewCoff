@@ -63,6 +63,9 @@ function normalizeCart(saved) {
         const product = products.find(p => p.id === item.id);
         if (product && item.qty > 0) {
             cart.push({ ...product, qty: item.qty });
+        } else if (item.id < STUDIO_CART_ID && item.name && item.price > 0 && item.qty > 0) {
+            // Produkt som admin lagt till – synkas mot katalogen när den laddats
+            cart.push({ ...item });
         } else if (item.id >= STUDIO_CART_ID && item.qty > 0) {
             cart.push({
                 id: item.id,

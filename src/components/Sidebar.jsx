@@ -1,6 +1,6 @@
 // Sidmeny (Rasmus)
 
-export default function Sidebar({ open, user, onClose, onLoginOrAccount, onToggleTheme, onLogout }) {
+export default function Sidebar({ open, user, onClose, onLoginOrAccount, onToggleTheme, onLogout, onAdmin }) {
     return (
         <>
             <div className={open ? 'sidebar-overlay open' : 'sidebar-overlay'} onClick={onClose}></div>
@@ -18,6 +18,14 @@ export default function Sidebar({ open, user, onClose, onLoginOrAccount, onToggl
                             <span className="sidebar-item-label">{user ? (user.name || user.email) : 'Logga in'}</span>
                         </button>
                     </li>
+                    {user?.role === 'admin' && (
+                        <li>
+                            <button className="sidebar-item" type="button" onClick={onAdmin}>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                                Admin – produkter
+                            </button>
+                        </li>
+                    )}
                     <li>
                         <button className="sidebar-item" type="button" onClick={onToggleTheme}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>

@@ -12,12 +12,14 @@ import Footer from './components/Footer.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import LoginDialog from './components/LoginDialog.jsx'
 import AccountDialog from './components/AccountDialog.jsx'
+import AdminPanel from './components/AdminPanel.jsx'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from './lib/firebase.js'
 import {
-    products,
+    products as defaultProducts,
     FILTER_PILLS,
     CART_STORAGE_KEY,
+    STUDIO_CART_ID,
 } from './data/products.js'
 import { cartSubtotal, shippingCost, formatKr } from './lib/cart.js'
 import {
@@ -28,6 +30,7 @@ import {
     loadUserProfile,
     storageSet
 } from './lib/storage.js'
+import { loadProducts, seedProducts, saveProduct, deleteProduct, nextProductId } from './lib/products.js'
 
 export default function App() {
     const [scrolled, setScrolled] = useState(false);
@@ -42,6 +45,10 @@ export default function App() {
     const [user, setUser] = useState(null);
     const [loginOpen, setLoginOpen] = useState(false);
     const [accountOpen, setAccountOpen] = useState(false);
+    const [adminOpen, setAdminOpen] = useState(false);
+    const [products, setProducts] = useState(defaultProducts);
+    const [productsLoaded, setProductsLoaded] = useState(false);
+    const [productsFromCloud, setProductsFromCloud] = useState(false);
     const toastTimer = useRef(null);
 
     // Visade produkter: sökning har företräde, annars aktivt filter
@@ -56,7 +63,40 @@ export default function App() {
         return activeCategory === 'all'
             ? products
             : products.filter(p => p.category === activeCategory);
-    }, [activeCategory, searchQuery]);
+    }, [products, activeCategory, searchQuery]);
+
+    // Produktkatalogen från Firestore (standardlistan om samlingen är tom)
+    useEffect(() => {
+        let active = true;
+        loadProducts()
+            .then(({ items, fromCloud }) => {
+                if (!active) return;
+                setProducts(items);
+                setProductsFromCloud(fromCloud);
+                setProductsLoaded(true);
+            })
+            .catch(() => { /* behåll standardlistan */ });
+        return () => { active = false; };
+    }, []);
+
+    // Håll varukorgen i synk med katalogen (nya priser, borttagna produkter)
+    useEffect(() => {
+        if (!productsLoaded || !cartReady) return;
+        setCart(prev => {
+            let changed = false;
+            const next = [];
+            prev.forEach(item => {
+                if (item.id >= STUDIO_CART_ID) { next.push(item); return; }
+                const product = products.find(p => p.id === item.id);
+                if (!product) { changed = true; return; }
+                const updated = { ...item, name: product.name, category: product.category, price: product.price, desc: product.desc, image: product.image };
+                if (updated.name !== item.name || updated.category !== item.category || updated.price !== item.price ||
+                    updated.desc !== item.desc || updated.image !== item.image) changed = true;
+                next.push(updated);
+            });
+            return changed ? next : prev;
+        });
+    }, [products, productsLoaded, cartReady]);
 
     // Navbar – "scrolled"-klass efter lite scroll
     useEffect(() => {
@@ -123,9 +163,14 @@ export default function App() {
     }, [menuOpen]);
 
     useEffect(() => {
-        document.body.classList.toggle('login-open', loginOpen || accountOpen);
+        document.body.classList.toggle('login-open', loginOpen || accountOpen || adminOpen);
         document.body.style.overflow = cartOpen ? 'hidden' : '';
-    }, [cartOpen, loginOpen, accountOpen]);
+    }, [cartOpen, loginOpen, accountOpen, adminOpen]);
+
+    // Adminpanelen stängs om användaren inte (längre) är admin
+    useEffect(() => {
+        if (user?.role !== 'admin') setAdminOpen(false);
+    }, [user]);
 
     useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
 
@@ -219,6 +264,7 @@ export default function App() {
     async function handleLogout() {
         await signOut(auth);
         setAccountOpen(false);
+        setAdminOpen(false);
         setMenuOpen(false);
         showToast('Du har loggat ut');
     }
@@ -227,6 +273,37 @@ export default function App() {
         setMenuOpen(false);
         if (user) setAccountOpen(true);
         else setLoginOpen(true);
+    }
+
+    // ===== Admin: produkter =====
+    // Första ändringen kopierar standardlistan till Firestore
+    async function ensureProductsInCloud() {
+        if (productsFromCloud) return;
+        await seedProducts(products);
+        setProductsFromCloud(true);
+    }
+
+    async function handleAdminSave(product) {
+        await ensureProductsInCloud();
+        const isNew = product.id === null || product.id === undefined;
+        const saved = await saveProduct({ ...product, id: isNew ? nextProductId(products) : product.id });
+        setProducts(prev => (isNew ? [...prev, saved] : prev.map(p => p.id === saved.id ? saved : p)));
+        setProductsLoaded(true);
+        showToast(saved.name + (isNew ? ' lades till' : ' sparades'));
+    }
+
+    async function handleAdminDelete(productId) {
+        await ensureProductsInCloud();
+        await deleteProduct(productId);
+        setProducts(prev => prev.filter(p => p.id !== productId));
+        setProductsLoaded(true);
+        if (detailId === productId) setDetailId(null);
+        showToast('Produkten togs bort');
+    }
+
+    function handleSidebarAdmin() {
+        setMenuOpen(false);
+        setAdminOpen(true);
     }
 
     // ===== Tema =====
@@ -288,7 +365,7 @@ export default function App() {
     return (
         <>
             <Navbar scrolled={scrolled} menuOpen={menuOpen} onLogoClick={handleLogoClick} onNavigate={handleNavigate} onMenuToggle={() => setMenuOpen(o => !o)} />
-            <Sidebar open={menuOpen} user={user} onClose={() => setMenuOpen(false)} onLoginOrAccount={handleSidebarAccount} onToggleTheme={toggleTheme} onLogout={handleLogout} />
+            <Sidebar open={menuOpen} user={user} onClose={() => setMenuOpen(false)} onLoginOrAccount={handleSidebarAccount} onToggleTheme={toggleTheme} onLogout={handleLogout} onAdmin={handleSidebarAdmin} />
 
             {detailId === null ? (
                 <div id="mainView">
@@ -361,6 +438,9 @@ export default function App() {
 
             <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} onSuccess={handleLoginSuccess} />
             <AccountDialog open={accountOpen} user={user} onClose={() => setAccountOpen(false)} onNameSaved={handleNameSaved} />
+            {user?.role === 'admin' && (
+                <AdminPanel open={adminOpen} products={products} onClose={() => setAdminOpen(false)} onSave={handleAdminSave} onDelete={handleAdminDelete} />
+            )}
         </>
     );
 }

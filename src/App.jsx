@@ -12,33 +12,22 @@ import Footer from './components/Footer.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import LoginDialog from './components/LoginDialog.jsx'
 import AccountDialog from './components/AccountDialog.jsx'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { auth } from './lib/firebase.js'
 import {
     products,
     FILTER_PILLS,
     CART_STORAGE_KEY,
-    USER_KEY,
-    NAME_KEY,
-    TYPE_KEY
 } from './data/products.js'
 import { cartSubtotal, shippingCost, formatKr } from './lib/cart.js'
 import {
     loadCartFromStorage,
-    loadOrders,
-    saveOrders,
-    storageGet,
-    storageSet,
-    storageRemove
+    loadCart,
+    saveCart,
+    saveOrder,
+    loadUserProfile,
+    storageSet
 } from './lib/storage.js'
-
-function loadSavedUser() {
-    const email = storageGet(USER_KEY);
-    if (!email) return null;
-    return {
-        email,
-        name: storageGet(NAME_KEY) || '',
-        type: storageGet(TYPE_KEY) || 'kund'
-    };
-}
 
 export default function App() {
     const [scrolled, setScrolled] = useState(false);
@@ -47,9 +36,10 @@ export default function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [detailId, setDetailId] = useState(null); // null = huvudvyn
     const [cart, setCart] = useState(() => loadCartFromStorage());
+    const [cartReady, setCartReady] = useState(false);
     const [cartOpen, setCartOpen] = useState(false);
     const [toast, setToast] = useState(null);
-    const [user, setUser] = useState(() => loadSavedUser());
+    const [user, setUser] = useState(null);
     const [loginOpen, setLoginOpen] = useState(false);
     const [accountOpen, setAccountOpen] = useState(false);
     const toastTimer = useRef(null);
@@ -76,10 +66,56 @@ export default function App() {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    // Spara varukorgen i localStorage
+    // Ladda konto och varukorg från Firebase när autentisering ändras
     useEffect(() => {
-        storageSet(CART_STORAGE_KEY, JSON.stringify(cart));
-    }, [cart]);
+        let active = true;
+        const unsubscribe = onAuthStateChanged(auth, async firebaseUser => {
+            setCartReady(false);
+            if (!firebaseUser) {
+                if (active) {
+                    setUser(null);
+                    setCart(loadCartFromStorage());
+                    setCartReady(true);
+                }
+                return;
+            }
+            try {
+                const [profile, cloudCart] = await Promise.all([
+                    loadUserProfile(firebaseUser.uid),
+                    loadCart(firebaseUser.uid)
+                ]);
+                if (!active) return;
+                const account = {
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    name: profile?.name || '',
+                    type: profile?.type || 'kund',
+                    role: profile?.role === 'admin' ? 'admin' : 'user'
+                };
+                setUser(account);
+                const guestCart = loadCartFromStorage();
+                const nextCart = cloudCart === null ? guestCart : cloudCart;
+                setCart(nextCart);
+                if (cloudCart === null && guestCart.length) await saveCart(firebaseUser.uid, guestCart);
+            } catch (loadError) {
+                if (active) {
+                    setUser({ uid: firebaseUser.uid, email: firebaseUser.email, name: '', type: 'kund', role: 'user' });
+                    setCart(loadCartFromStorage());
+                }
+            }
+            if (active) setCartReady(true);
+        });
+        return () => { active = false; unsubscribe(); };
+    }, []);
+
+    useEffect(() => {
+        if (!cartReady) return;
+        if (user?.uid) {
+            saveCart(user.uid, cart).catch(() => showToast('Varukorgen kunde inte synkroniseras'));
+        } else {
+            storageSet(CART_STORAGE_KEY, JSON.stringify(cart));
+        }
+    }, [cart, cartReady, user]);
 
     // Scroll-lås: sidmeny/kontodialoger via klasser, varukorg via inline-stil
     useEffect(() => {
@@ -151,30 +187,28 @@ export default function App() {
     }
 
     // Kassa (demo) – sparar köphistorik för inloggade användare
-    function checkout() {
+    async function checkout() {
         if (cart.length === 0) return;
         const items = cart.map(item => ({ name: item.name, price: item.price, qty: item.qty }));
         const total = cartSubtotal(cart) + shippingCost(cart);
         alert('Tack för din beställning!\n\nTotalt: ' + formatKr(total) +
             '\n\n(Detta är en demo – ingen betalning görs.)');
         if (user && items.length > 0) {
-            const orders = loadOrders(user.email);
-            orders.push({ date: new Date().toISOString(), items, total });
-            saveOrders(user.email, orders);
+            try {
+                await saveOrder(user.uid, { date: new Date().toISOString(), items, total });
+            } catch (saveError) {
+                showToast('Beställningen kunde inte sparas till kontot');
+                return;
+            }
         }
         setCart([]);
         setCartOpen(false);
     }
 
     // ===== Inloggning & konto =====
-    function handleLoginSuccess({ email, name, type }) {
-        storageSet(USER_KEY, email);
-        if (name) storageSet(NAME_KEY, name);
-        else storageRemove(NAME_KEY);
-        storageSet(TYPE_KEY, type);
-        setUser({ email, name, type });
+    function handleLoginSuccess(account) {
         setLoginOpen(false);
-        showToast('Välkommen, ' + (name || email));
+        showToast('Välkommen, ' + (account.name || account.email));
     }
 
     function handleNameSaved(name) {
@@ -182,11 +216,8 @@ export default function App() {
         showToast(name ? 'Kontonamnet uppdaterades' : 'Kontonamnet togs bort');
     }
 
-    function handleLogout() {
-        storageRemove(USER_KEY);
-        storageRemove(NAME_KEY);
-        storageRemove(TYPE_KEY);
-        setUser(null);
+    async function handleLogout() {
+        await signOut(auth);
         setAccountOpen(false);
         setMenuOpen(false);
         showToast('Du har loggat ut');

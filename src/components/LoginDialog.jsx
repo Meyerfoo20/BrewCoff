@@ -1,31 +1,29 @@
 // Inloggning (Rasmus)
 //
-// Demo-inloggning (ingen backend): en mejl reserveras som konto när den
-// används första gången (sparas i localStorage). Samma mejl kräver samma
-// lösenord; kontonamnet sparas/uppdateras vid inloggning. Admin kräver
-// bekräftelsekoden 0005 när kontot skapas.
+// Nya e-postadresser registreras via Firebase Authentication.
 
 import { useEffect, useRef, useState } from 'react'
-import { ADMIN_CODE, NAME_KEY, TYPE_LABELS } from '../data/products.js'
-import { loadAccounts, saveAccounts, storageGet } from '../lib/storage.js'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { TYPE_LABELS } from '../data/products.js'
+import { auth } from '../lib/firebase.js'
+import { loadUserProfile, saveUserProfile } from '../lib/storage.js'
 
 export default function LoginDialog({ open, onClose, onSuccess }) {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [type, setType] = useState('kund')
-    const [adminCode, setAdminCode] = useState('')
     const [error, setError] = useState('')
+    const [busy, setBusy] = useState(false)
     const emailRef = useRef(null)
 
     // Nollställ formuläret (med tidigare kontonamn förifyllt) när dialogen öppnas
     useEffect(() => {
         if (!open) return
-        setName(storageGet(NAME_KEY) || '')
+        setName('')
         setEmail('')
         setPassword('')
         setType('kund')
-        setAdminCode('')
         setError('')
         const t = setTimeout(() => {
             if (emailRef.current) emailRef.current.focus();
@@ -41,7 +39,7 @@ export default function LoginDialog({ open, onClose, onSuccess }) {
         return () => document.removeEventListener('keydown', onKey);
     }, [open, onClose]);
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         const trimmedEmail = email.trim().toLowerCase();
         const trimmedName = name.trim();
@@ -50,26 +48,38 @@ export default function LoginDialog({ open, onClose, onSuccess }) {
             setError('Ange en giltig e-post och ett lösenord');
             return;
         }
-        const accounts = loadAccounts();
-        if (accounts[trimmedEmail]) {
-            // Reserverad mejl: kräver samma lösenord, kontotypen behålls
-            // och kontonamnet sparas/uppdateras
-            if (password !== accounts[trimmedEmail].password) {
-                setError('Fel lösenord för denna e-post');
-                return;
+        setBusy(true);
+        setError('');
+        try {
+            let credential;
+            try {
+                credential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
+            } catch (createError) {
+                if (createError.code !== 'auth/email-already-in-use') throw createError;
+                credential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
             }
-            if (trimmedName) accounts[trimmedEmail].name = trimmedName;
-        } else {
-            // Ny mejl -> reserveras som ett nytt konto
-            if (type === 'admin' && adminCode.trim() !== ADMIN_CODE) {
-                setError('Fel adminkod');
-                return;
-            }
-            accounts[trimmedEmail] = { password: password, name: trimmedName, type: type };
+
+            const existing = await loadUserProfile(credential.user.uid);
+            const profile = {
+                email: trimmedEmail,
+                name: trimmedName || existing?.name || '',
+                type: existing?.type === 'foretag' ? 'foretag' : existing?.type === 'kund' ? 'kund' : type,
+                role: existing?.role === 'admin' ? 'admin' : 'user'
+            };
+            await saveUserProfile(credential.user.uid, profile);
+            onSuccess({ uid: credential.user.uid, ...profile });
+        } catch (authError) {
+            const messages = {
+                'auth/invalid-credential': 'Fel e-post eller lösenord',
+                'auth/wrong-password': 'Fel lösenord för denna e-post',
+                'auth/weak-password': 'Lösenordet måste innehålla minst 6 tecken',
+                'auth/invalid-email': 'Ange en giltig e-postadress',
+                'auth/too-many-requests': 'För många försök. Försök igen senare.'
+            };
+            setError(messages[authError.code] || 'Kunde inte logga in. Kontrollera Firebase-inställningarna och försök igen.');
+        } finally {
+            setBusy(false);
         }
-        saveAccounts(accounts);
-        const account = accounts[trimmedEmail];
-        onSuccess({ email: trimmedEmail, name: account.name || '', type: account.type });
     }
 
     return (
@@ -97,11 +107,8 @@ export default function LoginDialog({ open, onClose, onSuccess }) {
                             </label>
                         ))}
                     </div>
-                    {type === 'admin' && (
-                        <input type="text" id="loginAdminCode" value={adminCode} onChange={e => setAdminCode(e.target.value)} placeholder="Adminkod (krävs för admin)" maxLength={4} inputMode="numeric" autoComplete="off" />
-                    )}
                     {error && <p className="login-error">{error}</p>}
-                    <button type="submit" className="btn-primary">Logga in</button>
+                    <button type="submit" className="btn-primary" disabled={busy}>{busy ? 'Vänta...' : 'Logga in'}</button>
                 </form>
             </div>
         </div>

@@ -92,8 +92,7 @@ export const USER_KEY = 'brewcoff-user';
 export const NAME_KEY = 'brewcoff-user-name';
 export const TYPE_KEY = 'brewcoff-user-type';
 export const ORDERS_PREFIX = 'brewcoff-orders:';
-export const ADMIN_CODE = '0005';
-export const TYPE_LABELS = { kund: 'Vanlig kund', foretag: 'Företagkund', admin: 'Admin' };
+export const TYPE_LABELS = { kund: 'Vanlig kund', foretag: 'Företagkund' };
 
 // ===== Studio (Jakob) =====
 export const STUDIO_PRICE = 149;

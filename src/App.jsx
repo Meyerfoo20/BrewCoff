@@ -13,6 +13,7 @@ import CartDrawer from './components/CartDrawer.jsx'
 import LoginDialog from './components/LoginDialog.jsx'
 import AccountDialog from './components/AccountDialog.jsx'
 import AdminPanel from './components/AdminPanel.jsx'
+import CoffeeDrinks from './components/CoffeeDrinks.jsx'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from './lib/firebase.js'
 import {
@@ -378,6 +379,7 @@ export default function App() {
                     />
                     <ProductGrid items={detailList} onOpenDetail={openProductDetail} onAddToCart={addToCart} />
                     <Studio onAddToCart={addStudioItem} />
+                    <CoffeeDrinks user={user} />
 
                     {/* Om oss (Rasmus) */}
                     <section id="om-oss" className="about-section">

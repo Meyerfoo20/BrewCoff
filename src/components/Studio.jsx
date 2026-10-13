@@ -31,7 +31,8 @@ export default function Studio({ onAddToCart }) {
     useEffect(() => {
         const redraw = () => {
             const canvas = canvasRef.current
-            if (canvas) drawMugDesign(canvas, state);
+            // drawMugDesign läser design.image – live-state:t har bilden som uploadedDataURL
+            if (canvas) drawMugDesign(canvas, { ...state, image: state.uploadedDataURL });
         };
         redraw();
         return subscribeAssets(redraw);

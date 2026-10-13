@@ -4,9 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "contributors": "node scripts/build-contributors.mjs",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "render-build": "npm install && npm run build && npm install --prefix server",
+    "start": "npm start --prefix server"
   },
   "dependencies": {
     "firebase": "^12.19.0",
@@ -17,5 +20,8 @@
     "@vitejs/plugin-react": "^4.5.0",
     "vite": "^7.0.0",
     "vite-plugin-singlefile": "^2.3.3"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

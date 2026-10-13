@@ -22,16 +22,20 @@ import {
     CART_STORAGE_KEY,
     STUDIO_CART_ID,
 } from './data/products.js'
-import { cartSubtotal, shippingCost, formatKr } from './lib/cart.js'
+import { formatKr } from './lib/cart.js'
+
+const LAST_PAID_KEY = 'brewcoff_last_paid_session'
 import {
     loadCartFromStorage,
     loadCart,
     saveCart,
     saveOrder,
     loadUserProfile,
-    storageSet
+    storageSet,
+    storageGet
 } from './lib/storage.js'
 import { loadProducts, seedProducts, saveProduct, deleteProduct, nextProductId } from './lib/products.js'
+import { startCheckout, verifyCheckout } from './lib/payments.js'
 
 export default function App() {
     const [scrolled, setScrolled] = useState(false);
@@ -51,6 +55,8 @@ export default function App() {
     const [productsLoaded, setProductsLoaded] = useState(false);
     const [productsFromCloud, setProductsFromCloud] = useState(false);
     const toastTimer = useRef(null);
+    const [checkoutBusy, setCheckoutBusy] = useState(false);
+    const [receipt, setReceipt] = useState(null); // betald Stripe-order att visa
 
     // Visade produkter: sökning har företräde, annars aktivt filter
     const detailList = useMemo(() => {
@@ -232,24 +238,53 @@ export default function App() {
         setCart(prev => prev.filter(i => i.id !== productId));
     }
 
-    // Kassa (demo) – sparar köphistorik för inloggade användare
+    // Kassa – skickar kunden till Stripe Checkout (Test Mode)
     async function checkout() {
-        if (cart.length === 0) return;
-        const items = cart.map(item => ({ name: item.name, price: item.price, qty: item.qty }));
-        const total = cartSubtotal(cart) + shippingCost(cart);
-        alert('Tack för din beställning!\n\nTotalt: ' + formatKr(total) +
-            '\n\n(Detta är en demo – ingen betalning görs.)');
-        if (user && items.length > 0) {
-            try {
-                await saveOrder(user.uid, { date: new Date().toISOString(), items, total });
-            } catch (saveError) {
-                showToast('Beställningen kunde inte sparas till kontot');
-                return;
-            }
+        if (cart.length === 0 || checkoutBusy) return;
+        setCheckoutBusy(true);
+        try {
+            const url = await startCheckout(cart, user);
+            window.location.href = url; // lämnar sidan -> Stripes betalsida
+        } catch (err) {
+            showToast(err.message);
+            setCheckoutBusy(false);
         }
-        setCart([]);
-        setCartOpen(false);
     }
+
+    // Tillbaka från Stripe: ?checkout=success&session_id=... eller ?checkout=cancel
+    useEffect(() => {
+        if (!cartReady) return; // vänta tills vi vet vem som är inloggad
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get('checkout');
+        if (!status) return;
+        const sessionId = params.get('session_id');
+        window.history.replaceState(null, '', window.location.pathname); // körs bara en gång
+
+        if (status === 'cancel') {
+            showToast('Betalningen avbröts – varukorgen finns kvar');
+            setCartOpen(true);
+            return;
+        }
+        if (status !== 'success' || !sessionId) return;
+
+        verifyCheckout(sessionId)
+            .then(async order => {
+                if (!order.paid) { showToast('Betalningen är inte genomförd'); return; }
+                setReceipt(order);
+                setCart([]);
+                // Spara bara en gång per betalning (t.ex. om man backar till sidan)
+                if (storageGet(LAST_PAID_KEY) === order.id) return;
+                storageSet(LAST_PAID_KEY, order.id);
+                if (user) {
+                    try {
+                        await saveOrder(user.uid, { date: new Date().toISOString(), items: order.items, total: order.total });
+                    } catch {
+                        showToast('Beställningen kunde inte sparas till kontot');
+                    }
+                }
+            })
+            .catch(err => showToast(err.message));
+    }, [cartReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // ===== Inloggning & konto =====
     function handleLoginSuccess(account) {
@@ -434,9 +469,34 @@ export default function App() {
                 onChangeQty={changeQty}
                 onRemove={removeFromCart}
                 onCheckout={checkout}
+                checkoutBusy={checkoutBusy}
             />
 
             {toast && <div className="cart-toast show" id="cartToast">{toast}</div>}
+
+            {receipt && (
+                <div className="cart-overlay open" onClick={() => setReceipt(null)} style={{ display: 'grid', placeItems: 'center', zIndex: 2000 }}>
+                    <div role="dialog" aria-modal="true" aria-label="Kvitto" onClick={e => e.stopPropagation()}
+                        style={{ background: '#fff', color: '#2b1d14', borderRadius: 16, padding: 24, width: 'min(420px, calc(100vw - 32px))', boxShadow: '0 20px 60px rgba(0,0,0,.25)' }}>
+                        <h2 style={{ marginTop: 0 }}>Tack för din beställning! ☕</h2>
+                        <p style={{ opacity: .7, marginTop: 0 }}>Testbetalning via Stripe – inga riktiga pengar drogs.</p>
+                        {receipt.items.map((item, i) => (
+                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '4px 0' }}>
+                                <span>{item.qty} × {item.name}</span>
+                                <span>{formatKr(item.price * item.qty)}</span>
+                            </div>
+                        ))}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, borderTop: '1px solid #ddd', marginTop: 8, paddingTop: 8 }}>
+                            <span>Totalt (inkl. frakt)</span>
+                            <span>{formatKr(receipt.total)}</span>
+                        </div>
+                        {receipt.receiptUrl && (
+                            <p><a href={receipt.receiptUrl} target="_blank" rel="noreferrer">Öppna kvittot från Stripe</a></p>
+                        )}
+                        <button className="cart-checkout-btn" onClick={() => setReceipt(null)}>Fortsätt handla</button>
+                    </div>
+                </div>
+            )}
 
             <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} onSuccess={handleLoginSuccess} />
             <AccountDialog open={accountOpen} user={user} onClose={() => setAccountOpen(false)} onNameSaved={handleNameSaved} />

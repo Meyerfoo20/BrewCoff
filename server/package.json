@@ -1,0 +1,19 @@
+{
+  "name": "brewcoff-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "BrewCoff backend – Express + Stripe (Test Mode)",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env index.js",
+    "dev": "node --watch --env-file-if-exists=.env index.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "stripe": "^18.0.0"
+  }
+}

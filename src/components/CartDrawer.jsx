@@ -21,7 +21,7 @@ function MugPreview({ design }) {
     return <canvas className="cart-mug-canvas" ref={canvasRef} width="76" height="76"></canvas>;
 }
 
-export default function CartDrawer({ open, items, onClose, onOpen, onChangeQty, onRemove, onCheckout }) {
+export default function CartDrawer({ open, items, onClose, onOpen, onChangeQty, onRemove, onCheckout, checkoutBusy }) {
     const totalQty = cartTotalQty(items);
     const subtotal = cartSubtotal(items);
     const shipping = shippingCost(items);
@@ -100,7 +100,10 @@ export default function CartDrawer({ open, items, onClose, onOpen, onChangeQty, 
                             <span>Totalt</span>
                             <span id="cartTotal">{formatKr(subtotal + shipping)}</span>
                         </div>
-                        <button className="cart-checkout-btn" onClick={onCheckout}>Till kassan</button>
+                        <button className="cart-checkout-btn" onClick={onCheckout} disabled={checkoutBusy}>
+                            {checkoutBusy ? 'Öppnar betalning…' : 'Till kassan'}
+                        </button>
+                        <p className="cart-shipping-note">🔒 Testbetalning via Stripe – använd kort 4242 4242 4242 4242</p>
                     </div>
                 )}
             </div>

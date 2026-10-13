@@ -6,4 +6,10 @@ import { viteSingleFile } from 'vite-plugin-singlefile'
 export default defineConfig({
   base: './',
   plugins: [react(), viteSingleFile()],
+  // Skicka /api-anrop till Express-servern (server/) under utveckling
+  server: {
+    proxy: {
+      '/api': 'http://localhost:4242',
+    },
+  },
 })

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BrewCoff · Bidrag</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #24342f; background: #f6f7f4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    button, input { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 3px solid #228267; outline-offset: 4px; }
+    .wrap { max-width: 1000px; margin: auto; padding: 0 32px; }
+    header { border-bottom: 1px solid #e0e5df; background: #fff; }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 76px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 700; letter-spacing: -.5px; }
+    .mark { display: grid; place-items: center; border-radius: 10px; background: #193f32; color: #fff; width: 34px; height: 34px; }
+    .github { font-size: 13px; color: #52675c; display: flex; align-items: center; gap: 8px; }
+    main { padding-top: 46px; padding-bottom: 40px; }
+    .eyebrow { color: #63756b; font-size: 11px; font-weight: 700; letter-spacing: 1.7px; text-transform: uppercase; }
+    h1 { margin: 11px 0 10px; font-size: clamp(30px, 5vw, 40px); font-weight: 650; letter-spacing: -1.6px; line-height: 1.15; }
+    .intro { margin: 0; color: #6a786e; font-size: 15px; line-height: 1.6; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px 0 22px; }
+    .metric { padding: 22px 24px; background: #fff; border: 1px solid #e0e5df; border-radius: 12px; }
+    .metric-label { display: block; color: #6a786e; font-size: 12px; margin-bottom: 10px; }
+    .metric-value { font-size: 30px; font-weight: 650; letter-spacing: -1px; }
+    .metric:first-child { background: #e9f0e9; border-color: #d7e3d8; }
+    .metric small { display: block; font-size: 11px; margin-top: 5px; color: #728074; }
+    .panel { background: #fff; border: 1px solid #e0e5df; border-radius: 12px; padding: 26px; margin-bottom: 22px; }
+    .section-head { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+    h2 { font-size: 17px; margin: 0; font-weight: 650; letter-spacing: -.3px; }
+    .note { font-size: 12px; color: #718076; margin: 7px 0 0; line-height: 1.5; }
+    .badge { font-size: 11px; color: #627367; background: #f3f5f0; padding: 5px 9px; border-radius: 6px; white-space: nowrap; }
+    .chart { display: grid; gap: 15px; margin-top: 27px; margin-bottom: 8px; }
+    .bar-row { display: grid; grid-template-columns: 128px 1fr 66px; align-items: center; gap: 16px; border: 0; padding: 5px 0; background: none; color: inherit; text-align: left; width: 100%; border-radius: 5px; }
+    .bar-row:hover .bar, .bar-row[aria-pressed="true"] .bar { background: #193f32; }
+    .bar-row[aria-pressed="true"] .person { font-weight: 700; }
+    .person { font-size: 13px; overflow-wrap: anywhere; }
+    .track { height: 21px; border-radius: 4px; background: #f2f5ef; overflow: hidden; }
+    .bar { height: 100%; border-radius: 4px; background: #709582; transition: background .15s; }
+    .count { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; text-align: right; }
+    .count small { font-size: 10px; color: #718076; font-weight: 400; }
+    .activity-head { padding-bottom: 22px; flex-wrap: wrap; }
+    .search { border: 1px solid #dce3da; border-radius: 7px; padding: 9px 12px; font-size: 12px; width: 220px; background: #fafbf8; color: #24342f; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .filter { border: 1px solid #e0e5df; background: #fff; border-radius: 7px; padding: 7px 11px; font-size: 11px; color: #65776b; }
+    .filter[aria-pressed="true"] { color: #fff; background: #244e3e; border-color: #244e3e; }
+    .commit { display: grid; grid-template-columns: 34px 1fr auto; gap: 13px; padding: 17px 0; border-top: 1px solid #edf0e9; }
+    .avatar { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #edf2e9; color: #59705e; font-size: 11px; font-weight: 650; margin-top: 2px; }
+    .message { font-size: 13px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+    .meta { color: #718076; font-size: 11px; margin-top: 5px; line-height: 1.6; }
+    .meta strong { color: #516557; font-weight: 500; }
+    .sha { align-self: start; font-family: ui-monospace, monospace; font-size: 10px; color: #768479; border: 1px solid #e5e9e2; padding: 4px 6px; border-radius: 5px; margin-top: 2px; }
+    details { margin-top: 8px; font-size: 11px; color: #6b7b6e; }
+    summary { cursor: pointer; width: fit-content; }
+    .files { padding-left: 17px; margin-bottom: 0; line-height: 1.8; font-family: ui-monospace, monospace; overflow-wrap: anywhere; }
+    .more { display: block; margin: 16px auto 0; padding: 9px 16px; background: #f7f9f4; border: 1px solid #e0e5df; border-radius: 7px; color: #52695a; font-size: 12px; }
+    .more[hidden] { display: none; }
+    .empty { padding: 24px 0; color: #718076; font-size: 13px; }
+    footer { color: #7a857b; font-size: 11px; display: flex; justify-content: space-between; gap: 20px; line-height: 1.6; }
+    @media (max-width: 600px) {
+      .wrap { padding: 0 20px; } main { padding-top: 30px; } .nav { min-height: 64px; }
+      .metrics { gap: 8px; } .metric { padding: 16px 12px; } .metric-value { font-size: 24px; }
+      .metric-label { font-size: 11px; } .panel { padding: 20px 16px; }
+      .bar-row { grid-template-columns: 90px 1fr 52px; gap: 10px; } .person { font-size: 11px; }
+      .count small { display: none; } .search { width: 100%; } .activity-head { align-items: flex-start; }
+      .commit { grid-template-columns: 28px 1fr; gap: 10px; } .avatar { width: 28px; height: 28px; } .sha { display: none; }
+      footer { flex-direction: column; gap: 6px; } .github { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <header><div class="wrap nav">
+    <a class="brand" id="repo-brand"><span class="mark" aria-hidden="true">B</span>BrewCoff <span style="font-weight:400;color:#9ba79b">/</span> <span style="font-weight:400;font-size:14px">Bidrag</span></a>
+    <a class="github" id="repo-link" target="_blank" rel="noopener noreferrer">Visa på GitHub <span aria-hidden="true">↗</span></a>
+  </div></header>
+  <main class="wrap">
+    <div class="eyebrow">Projektöversikt</div>
+    <h1>Vilka bygger BrewCoff?</h1>
+    <p class="intro">En liten överblick över personerna och deras bidrag till projektet.</p>
+    <div class="metrics">
+      <div class="metric"><span class="metric-label">Personer som bidragit</span><span class="metric-value" id="people">—</span><small>unika författarnamn</small></div>
+      <div class="metric"><span class="metric-label">Commits totalt</span><span class="metric-value" id="total">—</span><small>inklusive merge-commits</small></div>
+      <div class="metric"><span class="metric-label">Senaste commit</span><span class="metric-value" id="latest">—</span><small id="latest-year"></small></div>
+    </div>
+    <section class="panel" aria-labelledby="chart-title">
+      <div class="section-head"><div><h2 id="chart-title">Bidrag per person</h2><p class="note">Antal commits. Klicka på en person för att se deras ändringar.</p></div><span class="badge" id="branch"></span></div>
+      <div class="chart" id="chart"></div>
+    </section>
+    <section class="panel" aria-labelledby="activity-title">
+      <div class="section-head activity-head"><div><h2 id="activity-title">Vem har gjort vad?</h2><p class="note" id="activity-count"></p></div><input class="search" id="search" type="search" placeholder="Sök bland ändringar…" aria-label="Sök bland commit-meddelanden, personer och filer"></div>
+      <div class="filters" id="filters" aria-label="Filtrera på person"></div>
+      <div id="activity" aria-live="polite"></div>
+      <button class="more" id="more" type="button">Visa fler ändringar</button>
+    </section>
+    <footer><span id="source"></span><span id="updated"></span></footer>
+    <noscript>Aktivera JavaScript för att visa bidragen.</noscript>
+  </main>
+  <script>
+    const data = /* PROJECT_DATA */;
+    const $ = id => document.getElementById(id);
+    const escape = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const formatDate = (date, options) => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Stockholm', ...options}).format(new Date(date));
+    const contributors = Array.from(new Set(data.commits.map(commit => commit.author))).map(name => ({name, count: data.commits.filter(commit => commit.author === name).length})).sort((a,b) => b.count - a.count || a.name.localeCompare(b.name));
+    let selected = ''; let visible = 10;
+    const latest = data.commits[0]?.date;
+    $('repo-brand').href = data.repository;
+    $('repo-link').href = data.repository;
+    $('people').textContent = contributors.length;
+    $('total').textContent = data.commits.length;
+    $('latest').textContent = latest ? formatDate(latest, {day:'numeric',month:'short'}) : '—';
+    $('latest-year').textContent = latest ? formatDate(latest, {year:'numeric'}) : 'Inga commits';
+    $('branch').textContent = data.branch;
+    $('source').textContent = `Källa: Git-historiken på ${data.branch} · alla datum i svensk tid.`;
+    $('updated').textContent = `Hämtad ${formatDate(data.updated, {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}`;
+    function select(name) { selected = name; visible = 10; render(); }
+    function render() {
+      $('chart').innerHTML = contributors.map(person => `<button class="bar-row" type="button" data-author="${escape(person.name)}" aria-pressed="${selected === person.name}" aria-label="${escape(person.name)}, ${person.count} commits. Visa ändringar."><span class="person">${escape(person.name)}</span><span class="track" aria-hidden="true"><span class="bar" style="display:block;width:${person.count / Math.max(1,...contributors.map(person => person.count)) * 100}%"></span></span><span class="count">${person.count} <small>commits</small></span></button>`).join('');
+      $('filters').innerHTML = [{name:'', label:'Alla'}, ...contributors.map(person => ({name:person.name,label:person.name}))].map(person => `<button type="button" class="filter" data-author="${escape(person.name)}" aria-pressed="${selected === person.name}">${escape(person.label)}</button>`).join('');
+      const query = $('search').value.trim().toLocaleLowerCase('sv-SE');
+      const commits = data.commits.filter(commit => (!selected || commit.author === selected) && `${commit.author} ${commit.message} ${commit.files.join(' ')}`.toLocaleLowerCase('sv-SE').includes(query));
+      $('activity-count').textContent = `${commits.length} ${commits.length === 1 ? 'ändring' : 'ändringar'}${selected ? ' av ' + selected : ' från hela teamet'} · senaste först`;
+      $('activity').innerHTML = commits.length ? commits.slice(0, visible).map(commit => `<article class="commit"><span class="avatar" aria-hidden="true">${escape(commit.author.slice(0,2).toUpperCase())}</span><div><a class="message" href="${escape(data.repository)}/commit/${commit.sha}" target="_blank" rel="noopener noreferrer">${escape(commit.message)}</a><div class="meta"><strong>${escape(commit.author)}</strong> · ${formatDate(commit.date,{day:'numeric',month:'short',year:'numeric'})}${commit.merge ? ' · merge-commit' : ''}</div>${commit.files.length ? `<details><summary>${commit.files.length} ändrade ${commit.files.length === 1 ? 'fil' : 'filer'}</summary><ul class="files">${commit.files.map(file => `<li>${escape(file)}</li>`).join('')}</ul></details>` : ''}</div><a class="sha" href="${escape(data.repository)}/commit/${commit.sha}" target="_blank" rel="noopener noreferrer" aria-label="Visa commit ${commit.sha.slice(0,7)} på GitHub">${commit.sha.slice(0,7)}</a></article>`).join('') : '<p class="empty">Inga ändringar matchar din sökning.</p>';
+      $('more').hidden = commits.length <= visible;
+    }
+    for (const id of ['chart','filters']) $(id).addEventListener('click', event => { const button = event.target.closest('button[data-author]'); if (button) select(button.dataset.author); });
+    $('search').addEventListener('input', () => { visible = 10; render(); });
+    $('more').addEventListener('click', () => { visible += 10; render(); });
+    render();
+  </script>
+</body>
+</html>
